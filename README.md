@@ -5,9 +5,10 @@
 ## 快速入口
 
 - [企业存储架构师 100 问](content/100-questions/README.md)
+- [Q001：企业为什么需要专业存储？](content/published/Q001-why-enterprise-storage.md)
 - [GitHub 内容导航](channels/github/README.md)
 
-正文正在按更高的工程深度重写，当前不保留已撤回版本；完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
+当前仅保留 Q001；其余正文正在按更高的工程深度重写。完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
 
 ## 仓库结构
 
