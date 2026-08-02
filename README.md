@@ -8,6 +8,8 @@
 - [Q001：企业为什么需要专业存储？](content/published/Q001-why-enterprise-storage.md)
 - [GitHub 内容导航](channels/github/README.md)
 
+当前已发布冷启动前五篇和后续四篇，共九篇 GitHub 正文；完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
+
 ## 仓库结构
 
 - `content/100-questions/`：100 个企业存储问题的目录。
