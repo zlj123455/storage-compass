@@ -6,9 +6,10 @@
 
 - [企业存储架构师 100 问](content/100-questions/README.md)
 - [Q001：企业为什么需要专业存储？](content/published/Q001-why-enterprise-storage.md)
+- [Q003：一个 IO 请求进入存储系统后发生了什么？](content/published/Q003-io-request-path.md)
 - [GitHub 内容导航](channels/github/README.md)
 
-当前仅保留 Q001；其余正文正在按更高的工程深度重写。完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
+当前公开 Q001 与 Q003；其余正文正在按更高的工程深度重写。完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
 
 ## 仓库结构
 
