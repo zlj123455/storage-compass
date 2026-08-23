@@ -6,10 +6,16 @@
 
 - [企业存储架构师 100 问](content/100-questions/README.md)
 - [Q001：企业为什么需要专业存储？](content/published/Q001-why-enterprise-storage.md)
+- [Q002：NAS、SAN 与对象存储的差别是什么？](content/published/Q002-nas-san-object-storage.md)
 - [Q003：一个 IO 请求进入存储系统后发生了什么？](content/published/Q003-io-request-path.md)
+- [Q004：企业存储为什么不直接使用普通服务器硬盘？](content/published/Q004-server-disks.md)
+- [Q005：有备份、有副本，RAID 今天还解决什么问题？](content/published/Q005-raid-role.md)
+- [Q006：块、文件、对象三种数据接口分别适合什么负载？](content/published/Q006-block-file-object-workloads.md)
+- [Q007：容量、性能、可靠性和成本为什么不能独立决策？](content/published/Q007-coupled-storage-decisions.md)
+- [Q008：什么是存储系统的控制面与数据面？](content/published/Q008-control-and-data-planes.md)
 - [GitHub 内容导航](channels/github/README.md)
 
-当前公开 Q001 与 Q003；其余正文正在按更高的工程深度重写。完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
+当前公开 Q001–Q008。完整编号与主题请从 [100 问目录](content/100-questions/README.md)进入。
 
 ## 仓库结构
 

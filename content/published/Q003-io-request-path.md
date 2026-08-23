@@ -62,4 +62,5 @@
 
 - [Q001：企业为什么需要专业存储？](Q001-why-enterprise-storage.md)
 - [Q002：NAS、SAN 与对象存储的差别是什么？](Q002-nas-san-object-storage.md)
-- [Q046：RAID 5、RAID 6 和 RAID 10 如何取舍？](Q046-raid-tradeoffs.md)
+- [Q004：企业存储为什么不直接使用普通服务器硬盘？](Q004-server-disks.md)
+- [Q005：有备份、有副本，RAID 今天还解决什么问题？](Q005-raid-role.md)
