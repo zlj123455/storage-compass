@@ -3,7 +3,12 @@
 """生成存储罗盘站点首页 index.html + 更新 README 文章目录。
 
 结构：系列（series）→ 章节（chapter）→ 文章（item）
-新增系列：在 SERIES_AI 同级的列表里加一个 dict 即可。
+设计要点（2026-10-28 定稿）：
+  - 移动优先：单列、触控目标 ≥44px、搜索字号 16px 防 iOS 缩放；
+  - 联系入口三处：吸顶「联系」按钮 → 底部抽屉；首屏联系卡（个人微信 + 公众号）；
+  - 公众号用官方素材：assets/wx-qr.jpg（258x258）+ CSS 复刻「搜一搜」搜索框；
+  - 个人微信码：card/qr-wechat.png；
+  - 章节在手机端折叠（details/summary），桌面端默认全展开。
 用法:  python tools/build_site.py   （在 storage-compass 仓库根目录运行）
 """
 import os, re, glob, html, json, subprocess
@@ -14,6 +19,9 @@ MP_LINKS = 'tools/mp-links.json'
 REPO = 'https://github.com/zlj123455/storage-compass'
 BLOB = REPO + '/blob/main/content/published/'
 SITE = 'https://zlj123455.github.io/storage-compass'
+
+QR_PERSONAL = 'card/qr-wechat.png'   # 个人微信二维码（从文章联系方式卡裁出）
+QR_WX = 'assets/wx-qr.jpg'           # 公众号二维码（后台下载 258x258）
 
 
 def load_mp_links():
@@ -98,6 +106,20 @@ def item_html(key, no, title, note, href, tag=None):
             % (html.escape(key.lower()), href, no, html.escape(title), note_html, tag_html))
 
 
+def chapter_block(anchor, badge, name, count, cards, desc=None):
+    """章节块：details/summary，手机端可折叠。"""
+    desc_html = '<p class="ch-desc">%s</p>' % html.escape(desc) if desc else ''
+    return '''      <details class="chapter" id="%s">
+        <summary class="ch-head"><span class="ch-num">%s</span>
+          <h3>%s</h3><span class="ch-count">%s</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">%s
+          <ul class="grid">
+%s
+          </ul>
+        </div>
+      </details>''' % (anchor, badge, html.escape(name), count, desc_html, cards)
+
+
 def build():
     qs = collect_questions()
     chap_map, chap_order = load_chapters()
@@ -122,27 +144,15 @@ def build():
                      % (anchor, '第%s章' % (cn_num[i] if i < 10 else i + 1), html.escape(ch[1])))
         cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '',
                                     mp.get('Q%03d' % n, BLOB + b)) for n, b, t in items)
-        s1_chapters.append('''      <div class="chapter" id="%s">
-        <div class="ch-head"><span class="ch-num">%s</span>
-          <h3>%s</h3><span class="ch-count">%d 篇</span></div>
-        <ul class="grid">
-%s
-        </ul>
-      </div>''' % (anchor, '第%s章' % (cn_num[i] if i < 10 else i + 1),
-                   html.escape(ch[1]), len(items), cards))
+        s1_chapters.append(chapter_block(anchor, '第%s章' % (cn_num[i] if i < 10 else i + 1),
+                                         ch[1], '%d 篇' % len(items), cards))
 
     extras = groups.get(None, [])
     if extras:
         cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '',
                                     mp.get('Q%03d' % n, BLOB + b)) for n, b, t in extras)
         chips.append('<a class="chip" href="#chx">其他主题</a>')
-        s1_chapters.append('''      <div class="chapter" id="chx">
-        <div class="ch-head"><span class="ch-num">+</span><h3>其他主题</h3>
-          <span class="ch-count">%d 篇</span></div>
-        <ul class="grid">
-%s
-        </ul>
-      </div>''' % (len(extras), cards))
+        s1_chapters.append(chapter_block('chx', '+', '其他主题', '%d 篇' % len(extras), cards))
 
     q_total = sum(len(v) for v in groups.values())
 
@@ -166,14 +176,7 @@ def build():
         chips.append('<a class="chip" href="#%s">%s</a>' % (anchor, html.escape(gname)))
         cards = '\n'.join(item_html('%s %s %s' % (lab, t, s), lab, t, s, u)
                           for lab, t, s, u in items)
-        ai_blocks.append('''      <div class="chapter" id="%s">
-        <div class="ch-head"><span class="ch-num">AI</span>
-          <h3>%s</h3><span class="ch-count">%d 讲</span></div>
-        <p class="ch-desc">%s</p>
-        <ul class="grid">
-%s
-        </ul>
-      </div>''' % (anchor, html.escape(gname), len(items), html.escape(gdesc), cards))
+        ai_blocks.append(chapter_block(anchor, 'AI', gname, '%d 讲' % len(items), cards, gdesc))
 
     series_html.append('''  <section class="series" id="s2">
     <div class="series-head">
@@ -199,85 +202,171 @@ def build():
 <meta name="description" content="面向企业架构师、IT 负责人与存储选型团队的公开知识库：企业存储架构、可靠性、性能、选型判断，以及 AI 推理对存储的需求。">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-:root { --red:#B01F24; --ink:#22221F; --muted:#77756E; --line:#E9E5DC; --paper:#FCFBF8; }
+:root { --red:#B01F24; --pink:#E6108D; --ink:#22221F; --muted:#77756E; --line:#E9E5DC; --paper:#FCFBF8; }
 body { font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
   background:var(--paper); color:var(--ink); line-height:1.65; -webkit-font-smoothing:antialiased; }
-.wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
 
-.hero { padding:68px 0 30px; border-bottom:1px solid var(--line); }
+/* ── 吸顶栏：品牌 + 联系按钮（任何位置可联系）────────── */
+.topbar { position:sticky; top:0; z-index:20; background:rgba(252,251,248,.96);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.topbar .wrap { display:flex; align-items:center; gap:10px; height:52px; }
+.brand { display:flex; align-items:center; gap:9px; font-weight:500; font-size:15px;
+  color:var(--ink); text-decoration:none; }
+.brand i { width:24px; height:24px; border-radius:7px; background:var(--red); color:#fff;
+  font-style:normal; font-size:12px; display:flex; align-items:center; justify-content:center; }
+.brand em { font-style:normal; color:#B9B5AA; font-size:12px; margin-left:2px; }
+.top-cta { margin-left:auto; background:var(--red); color:#fff; border:none; border-radius:999px;
+  padding:9px 18px; font-size:13.5px; cursor:pointer; font-family:inherit; }
+.top-cta:active { background:#96191D; }
+
+/* ── 首屏 ─────────────────────────────────────────── */
+.hero { padding:44px 0 26px; }
 .kicker { display:inline-block; font-size:12px; letter-spacing:.18em; color:var(--red);
   border:1px solid #E7C9C9; padding:4px 10px; border-radius:999px; background:#FDF6F5; }
-h1 { font-size:38px; font-weight:500; letter-spacing:-.5px; margin:18px 0 10px; }
-h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
-.lede { color:#5F5D57; font-size:15.5px; max-width:660px; }
-.stats { display:flex; gap:34px; margin:26px 0 0; flex-wrap:wrap; }
+h1 { font-size:30px; font-weight:500; letter-spacing:-.5px; margin:16px 0 10px; }
+h1 span { color:#B9B5AA; font-size:16px; letter-spacing:0; margin-left:8px; }
+.lede { color:#5F5D57; font-size:15px; max-width:660px; }
+.stats { display:flex; gap:26px; margin:20px 0 0; flex-wrap:wrap; }
 .stat { font-size:13px; color:var(--muted); }
-.stat b { font-size:26px; font-weight:500; color:var(--red); margin-right:6px; }
+.stat b { font-size:22px; font-weight:500; color:var(--red); margin-right:6px; }
 
-.toolbar { position:sticky; top:0; z-index:9; background:rgba(252,251,248,.94);
-  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 0; }
-.toolbar .wrap { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-#q { flex:1 1 240px; min-width:190px; border:1px solid var(--line); background:#fff; border-radius:10px;
-  padding:9px 14px; font-size:14px; color:var(--ink); outline:none; }
+/* ── 首屏联系卡：个人微信 + 公众号（不用拉到底）───────── */
+.contact { padding:6px 0 10px; }
+.contact-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.contact-card::before { content:''; display:block; height:3px; background:var(--red); }
+.c-grid { display:grid; grid-template-columns:1fr; }
+.c-col { padding:16px 18px 18px; }
+.c-divider { display:none; }
+.c-tag { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px;
+  border:1px solid #E7C9C9; background:#FDF6F5; color:var(--red); }
+.c-tag.pink { border-color:#F5C7E3; background:#FDF3F9; color:var(--pink); }
+.c-col h3 { font-size:16.5px; font-weight:500; margin-top:8px; }
+.c-col p { font-size:13px; color:var(--muted); margin-top:2px; }
+.c-qr { width:136px; height:136px; border:1px solid var(--line); border-radius:10px;
+  margin-top:10px; display:block; }
+.c-hint { font-size:12px; color:#A8A399; margin-top:8px; }
+.wx-row { display:flex; gap:14px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+.wx-row .c-qr { width:108px; height:108px; margin-top:0; }
+.wx-search { display:inline-flex; align-items:center; gap:9px; background:var(--pink); color:#fff;
+  font-size:15px; font-weight:500; padding:11px 18px; border-radius:10px; }
+.wx-mag { width:13px; height:13px; border:2px solid rgba(255,255,255,.95); border-radius:50%;
+  position:relative; flex-shrink:0; }
+.wx-mag::after { content:''; position:absolute; width:6px; height:2px; background:rgba(255,255,255,.95);
+  transform:rotate(45deg); right:-5px; bottom:-2px; }
+
+/* ── 搜索工具条 ───────────────────────────────────── */
+.toolbar { position:sticky; top:52px; z-index:15; background:rgba(252,251,248,.94);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:10px 0; }
+.toolbar .wrap { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+#q { flex:1 1 200px; min-width:170px; border:1px solid var(--line); background:#fff; border-radius:10px;
+  padding:10px 14px; font-size:16px; color:var(--ink); outline:none; font-family:inherit; }
 #q:focus { border-color:#D9A9A9; box-shadow:0 0 0 3px #F7EDEC; }
-.chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
+.chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
 .chip { white-space:nowrap; font-size:12.5px; color:#5F5D57; border:1px solid var(--line); background:#fff;
-  padding:6px 11px; border-radius:999px; text-decoration:none; }
+  padding:8px 12px; border-radius:999px; text-decoration:none; }
 .chip:hover { border-color:#D9A9A9; color:var(--red); }
 
-.series { padding:44px 0 4px; }
-.series + .series { border-top:1px solid var(--line); margin-top:26px; }
-.series-head { margin-bottom:22px; }
-.series-meta { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+/* ── 系列 / 章节 / 条目 ───────────────────────────── */
+.series { padding:38px 0 4px; }
+.series + .series { border-top:1px solid var(--line); margin-top:24px; }
+.series-head { margin-bottom:16px; }
+.series-meta { display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
 .series-no { font-size:11.5px; letter-spacing:.16em; color:var(--red); border:1px solid #E7C9C9;
   background:#FDF6F5; border-radius:999px; padding:3px 10px; }
 .series-count { font-size:12.5px; color:#B4B0A5; }
-.series-head h2 { font-size:26px; font-weight:500; letter-spacing:-.2px; }
+.series-head h2 { font-size:23px; font-weight:500; letter-spacing:-.2px; }
 .series-head p { color:#6B6961; font-size:14px; max-width:680px; margin-top:6px; }
-.series-body { border-left:2px solid #F0EBE1; padding-left:22px; margin-left:2px; }
+.series-body { border-left:2px solid #F0EBE1; padding-left:16px; margin-left:2px; }
 
-.chapter { padding:14px 0 10px; }
-.ch-head { display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+details.chapter { padding:10px 0 6px; }
+details.chapter + details.chapter { border-top:1px dashed #EFEBE2; }
+details.chapter > summary { list-style:none; cursor:pointer; }
+details.chapter > summary::-webkit-details-marker { display:none; }
+.ch-head { display:flex; align-items:center; gap:10px; padding:8px 0; min-height:44px; }
 .ch-num { font-size:12px; font-weight:500; color:var(--red); border:1px solid #E7C9C9; background:#FDF6F5;
   border-radius:6px; padding:2px 8px; white-space:nowrap; }
-.ch-head h3 { font-size:16px; font-weight:500; }
+.ch-head h3 { font-size:15.5px; font-weight:500; }
 .ch-count { font-size:12.5px; color:#B4B0A5; margin-left:auto; }
-.ch-desc { font-size:12.5px; color:#9A968B; margin:-6px 0 12px 2px; }
+.ch-arrow { color:#B4B0A5; font-size:15px; transition:transform .2s; margin-left:6px; }
+details[open] > summary .ch-arrow { transform:rotate(90deg); }
+.ch-desc { font-size:12.5px; color:#9A968B; margin:0 0 10px 2px; }
 
-.grid { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+.grid { list-style:none; display:grid; grid-template-columns:1fr; gap:8px; }
 .item a { display:flex; gap:12px; align-items:baseline; background:#fff; border:1px solid var(--line);
   border-radius:10px; padding:13px 15px; text-decoration:none; color:var(--ink); height:100%;
   transition:border-color .15s, transform .15s, box-shadow .15s; }
 .item a:hover { border-color:#DCC5C4; transform:translateY(-1px); box-shadow:0 2px 10px rgba(34,34,31,.05); }
 .qno { font-size:12px; color:#A8A399; font-variant-numeric:tabular-nums; min-width:40px; flex-shrink:0; }
-.qt { font-size:14px; line-height:1.55; flex:1; }
+.qt { font-size:14.5px; line-height:1.55; flex:1; }
 .note { display:block; color:#9A968B; font-size:12.5px; font-style:normal; margin-top:2px; }
 .tag { font-size:11px; color:#A8A399; border:1px solid var(--line); border-radius:4px;
   padding:1px 5px; align-self:center; flex-shrink:0; }
 
-.cta { margin:46px 0 0; padding:26px 28px; background:#fff; border:1px solid var(--line); border-radius:14px;
-  display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; }
+.cta { margin:40px 0 0; padding:22px 24px; background:#fff; border:1px solid var(--line); border-radius:14px;
+  display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
 .cta h3 { font-size:16px; font-weight:500; }
 .cta p { font-size:13.5px; color:#77756E; margin-top:4px; }
 .btn { display:inline-block; background:var(--red); color:#fff; text-decoration:none; font-size:14px;
-  padding:10px 20px; border-radius:9px; }
+  border:none; padding:11px 22px; border-radius:9px; cursor:pointer; font-family:inherit; }
 .btn:hover { background:#96191D; }
-.foot { color:#B4B0A5; font-size:12.5px; text-align:center; padding:36px 0 50px; }
+.foot { color:#B4B0A5; font-size:12.5px; text-align:center; padding:34px 0 90px; }
 .empty { display:none; text-align:center; color:#A8A399; font-size:14px; padding:40px 0; }
 
-@media (max-width:640px) {
-  .hero { padding:42px 0 24px; }
-  h1 { font-size:28px; } h1 span { display:block; font-size:15px; margin:8px 0 0; }
-  .stat b { font-size:21px; } .stats { gap:20px; }
-  .series-head h2 { font-size:21px; }
-  .series-body { padding-left:14px; }
-  .grid { grid-template-columns:1fr; }
-  .cta { flex-direction:column; align-items:flex-start; }
+/* ── 联系抽屉：手机从底部弹出，桌面居中 ─────────────── */
+.overlay { position:fixed; inset:0; background:rgba(20,20,18,.45); opacity:0; pointer-events:none;
+  transition:opacity .2s; z-index:50; }
+.overlay.on { opacity:1; pointer-events:auto; }
+.sheet { position:fixed; left:50%; bottom:0; transform:translate(-50%,105%); width:min(430px,100%);
+  background:#fff; border-radius:18px 18px 0 0; z-index:51; padding:12px 22px 30px;
+  transition:transform .25s ease; text-align:center; }
+.sheet.on { transform:translate(-50%,0); }
+.sheet-grab { width:40px; height:4px; border-radius:2px; background:#D3D1C7; margin:0 auto 10px; }
+.sheet-head { display:flex; align-items:center; }
+.sheet-head h3 { font-size:17px; font-weight:500; flex:1; text-align:left; }
+.sheet-x { border:none; background:none; font-size:22px; color:#888780; cursor:pointer;
+  padding:6px 10px; line-height:1; }
+.sheet-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0 6px; }
+.sheet-grid img { width:100%; max-width:150px; border:1px solid var(--line); border-radius:10px; }
+.sheet-grid .s-col { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.s-label { font-size:13px; font-weight:500; }
+.s-sub { font-size:11.5px; color:#A8A399; }
+.sheet .wx-search { font-size:14px; padding:8px 14px; margin-top:4px; }
+.sheet-note { font-size:12.5px; color:#77756E; border-top:1px dashed #EFEBE2; margin-top:14px; padding-top:12px; }
+
+/* ── 桌面端增强 ───────────────────────────────────── */
+@media (min-width:768px) {
+  .wrap { padding:0 24px; }
+  .hero { padding:64px 0 28px; }
+  h1 { font-size:38px; } h1 span { font-size:19px; }
+  .stat b { font-size:26px; } .stats { gap:34px; }
+  .c-grid { grid-template-columns:1fr 1px 1fr; align-items:stretch; }
+  .c-divider { display:block; background:var(--line); }
+  .c-qr { width:150px; height:150px; }
+  .series-head h2 { font-size:26px; }
+  .series-body { padding-left:22px; }
+  .grid { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+  #q { font-size:14px; padding:9px 14px; }
+  .sheet { bottom:auto; top:50%; transform:translate(-50%,-46%); border-radius:18px; opacity:0;
+    pointer-events:none; transition:opacity .2s, transform .2s; }
+  .sheet.on { transform:translate(-50%,-50%); opacity:1; pointer-events:auto; }
+  .sheet-grab { display:none; }
+}
+@media (min-width:460px) and (max-width:767px) {
+  .c-grid { grid-template-columns:1fr 1px 1fr; align-items:stretch; }
+  .c-divider { display:block; background:var(--line); }
 }
 </style>
 </head>
 <body>
-<header class="hero">
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#"><i>罗</i>存储罗盘<em>storage-compass</em></a>
+    <button class="top-cta" id="contactBtn" type="button">联系</button>
+  </div>
+</header>
+
+<section class="hero">
   <div class="wrap">
     <span class="kicker">公开知识库</span>
     <h1>存储罗盘<span>storage-compass</span></h1>
@@ -288,7 +377,35 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
       <span class="stat"><b>100</b>问连载中</span>
     </div>
   </div>
-</header>
+</section>
+
+<!-- 首屏联系卡：不用滚动到底 -->
+<section class="contact">
+  <div class="wrap">
+    <div class="contact-card">
+      <div class="c-grid">
+        <div class="c-col">
+          <span class="c-tag">一对一交流</span>
+          <h3>加我微信</h3>
+          <p>选型、扩容、项目合作，直接找我</p>
+          <img class="c-qr" src="{{QR_PERSONAL}}" alt="个人微信二维码">
+          <span class="c-hint">微信内长按识别 · 加我后回复「进群」可入同行群</span>
+        </div>
+        <div class="c-divider"></div>
+        <div class="c-col">
+          <span class="c-tag pink">公众号</span>
+          <h3>关注「存储罗盘」</h3>
+          <p>连载更新，第一时间收到新文章</p>
+          <div class="wx-row">
+            <img class="c-qr" src="{{QR_WX}}" alt="公众号二维码">
+            <span class="wx-search"><span class="wx-mag"></span>存储罗盘</span>
+          </div>
+          <span class="c-hint">微信搜一搜「存储罗盘」，或长按二维码识别</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="toolbar">
   <div class="wrap">
@@ -305,20 +422,45 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
   <section class="cta">
     <div><h3>存储选型、架构讨论、同行交流</h3>
       <p>全闪阵列、SAN / 灾备、信创存储与 AI 基础设施的一线信息，随时聊。</p></div>
-    <a class="btn" href="card/">联系方式 →</a>
+    <button class="btn" id="ctaBtn" type="button">联系方式 →</button>
   </section>
 
   <p class="foot">© 2026 赵龙杰 · 中科曙光 FlashNexus · 公众号「存储罗盘」同步连载</p>
 </main>
+
+<!-- 联系抽屉 -->
+<div class="overlay" id="overlay"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="联系方式">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head"><h3>联系我</h3><button class="sheet-x" id="sheetX" type="button" aria-label="关闭">×</button></div>
+  <div class="sheet-grid">
+    <div class="s-col">
+      <img src="{{QR_PERSONAL}}" alt="个人微信二维码">
+      <span class="s-label">加我微信</span>
+      <span class="s-sub">微信内长按识别</span>
+    </div>
+    <div class="s-col">
+      <img src="{{QR_WX}}" alt="公众号二维码">
+      <span class="s-label">关注公众号</span>
+      <span class="wx-search"><span class="wx-mag"></span>存储罗盘</span>
+    </div>
+  </div>
+  <p class="sheet-note">加我后回复「进群」可入同行群 · 公众号：搜一搜「存储罗盘」</p>
+</div>
 
 <script>
 (function(){
   var q = document.getElementById('q');
   var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
   var empties = document.getElementById('empty');
-  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('details.chapter'));
   var series = Array.prototype.slice.call(document.querySelectorAll('.series'));
   function vis(el){ return el.style.display !== 'none'; }
+  function isMobile(){ return window.innerWidth < 768; }
+  /* 桌面端默认全展开，手机端只展开第一章 */
+  if (!isMobile()) {
+    chapters.forEach(function(d){ d.open = true; });
+  }
   q.addEventListener('input', function(){
     var v = q.value.trim().toLowerCase(), shown = 0;
     items.forEach(function(it){
@@ -329,6 +471,8 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
     chapters.forEach(function(sec){
       var any = Array.prototype.some.call(sec.querySelectorAll('.item'), vis);
       sec.style.display = any ? '' : 'none';
+      if (v && any) { sec.open = true; }
+      else if (!v) { sec.open = !isMobile() || sec.id === 'ch1'; }
     });
     series.forEach(function(sec){
       var any = Array.prototype.some.call(sec.querySelectorAll('.item'), vis);
@@ -336,6 +480,16 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
     });
     empties.style.display = (v && shown === 0) ? 'block' : 'none';
   });
+  /* 联系抽屉 */
+  var overlay = document.getElementById('overlay');
+  var sheet = document.getElementById('sheet');
+  function openSheet(){ overlay.classList.add('on'); sheet.classList.add('on'); document.body.style.overflow='hidden'; }
+  function closeSheet(){ overlay.classList.remove('on'); sheet.classList.remove('on'); document.body.style.overflow=''; }
+  document.getElementById('contactBtn').addEventListener('click', openSheet);
+  document.getElementById('ctaBtn').addEventListener('click', openSheet);
+  document.getElementById('sheetX').addEventListener('click', closeSheet);
+  overlay.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
 })();
 </script>
 </body>
@@ -343,7 +497,8 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
 '''
     page = (page.replace('{{NS}}', str(n_series)).replace('{{TOTAL}}', str(total_all))
                 .replace('{{CHIPS}}', '\n      '.join(chips))
-                .replace('{{SERIES}}', '\n\n'.join(series_html)))
+                .replace('{{SERIES}}', '\n\n'.join(series_html))
+                .replace('{{QR_PERSONAL}}', QR_PERSONAL).replace('{{QR_WX}}', QR_WX))
     open('index.html', 'w', encoding='utf-8').write(page)
 
     # ── README 同步 ──────────────────────────────────

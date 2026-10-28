@@ -7,85 +7,171 @@
 <meta name="description" content="面向企业架构师、IT 负责人与存储选型团队的公开知识库：企业存储架构、可靠性、性能、选型判断，以及 AI 推理对存储的需求。">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-:root { --red:#B01F24; --ink:#22221F; --muted:#77756E; --line:#E9E5DC; --paper:#FCFBF8; }
+:root { --red:#B01F24; --pink:#E6108D; --ink:#22221F; --muted:#77756E; --line:#E9E5DC; --paper:#FCFBF8; }
 body { font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
   background:var(--paper); color:var(--ink); line-height:1.65; -webkit-font-smoothing:antialiased; }
-.wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
 
-.hero { padding:68px 0 30px; border-bottom:1px solid var(--line); }
+/* ── 吸顶栏：品牌 + 联系按钮（任何位置可联系）────────── */
+.topbar { position:sticky; top:0; z-index:20; background:rgba(252,251,248,.96);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.topbar .wrap { display:flex; align-items:center; gap:10px; height:52px; }
+.brand { display:flex; align-items:center; gap:9px; font-weight:500; font-size:15px;
+  color:var(--ink); text-decoration:none; }
+.brand i { width:24px; height:24px; border-radius:7px; background:var(--red); color:#fff;
+  font-style:normal; font-size:12px; display:flex; align-items:center; justify-content:center; }
+.brand em { font-style:normal; color:#B9B5AA; font-size:12px; margin-left:2px; }
+.top-cta { margin-left:auto; background:var(--red); color:#fff; border:none; border-radius:999px;
+  padding:9px 18px; font-size:13.5px; cursor:pointer; font-family:inherit; }
+.top-cta:active { background:#96191D; }
+
+/* ── 首屏 ─────────────────────────────────────────── */
+.hero { padding:44px 0 26px; }
 .kicker { display:inline-block; font-size:12px; letter-spacing:.18em; color:var(--red);
   border:1px solid #E7C9C9; padding:4px 10px; border-radius:999px; background:#FDF6F5; }
-h1 { font-size:38px; font-weight:500; letter-spacing:-.5px; margin:18px 0 10px; }
-h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
-.lede { color:#5F5D57; font-size:15.5px; max-width:660px; }
-.stats { display:flex; gap:34px; margin:26px 0 0; flex-wrap:wrap; }
+h1 { font-size:30px; font-weight:500; letter-spacing:-.5px; margin:16px 0 10px; }
+h1 span { color:#B9B5AA; font-size:16px; letter-spacing:0; margin-left:8px; }
+.lede { color:#5F5D57; font-size:15px; max-width:660px; }
+.stats { display:flex; gap:26px; margin:20px 0 0; flex-wrap:wrap; }
 .stat { font-size:13px; color:var(--muted); }
-.stat b { font-size:26px; font-weight:500; color:var(--red); margin-right:6px; }
+.stat b { font-size:22px; font-weight:500; color:var(--red); margin-right:6px; }
 
-.toolbar { position:sticky; top:0; z-index:9; background:rgba(252,251,248,.94);
-  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 0; }
-.toolbar .wrap { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-#q { flex:1 1 240px; min-width:190px; border:1px solid var(--line); background:#fff; border-radius:10px;
-  padding:9px 14px; font-size:14px; color:var(--ink); outline:none; }
+/* ── 首屏联系卡：个人微信 + 公众号（不用拉到底）───────── */
+.contact { padding:6px 0 10px; }
+.contact-card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.contact-card::before { content:''; display:block; height:3px; background:var(--red); }
+.c-grid { display:grid; grid-template-columns:1fr; }
+.c-col { padding:16px 18px 18px; }
+.c-divider { display:none; }
+.c-tag { display:inline-block; font-size:11px; padding:2px 9px; border-radius:999px;
+  border:1px solid #E7C9C9; background:#FDF6F5; color:var(--red); }
+.c-tag.pink { border-color:#F5C7E3; background:#FDF3F9; color:var(--pink); }
+.c-col h3 { font-size:16.5px; font-weight:500; margin-top:8px; }
+.c-col p { font-size:13px; color:var(--muted); margin-top:2px; }
+.c-qr { width:136px; height:136px; border:1px solid var(--line); border-radius:10px;
+  margin-top:10px; display:block; }
+.c-hint { font-size:12px; color:#A8A399; margin-top:8px; }
+.wx-row { display:flex; gap:14px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+.wx-row .c-qr { width:108px; height:108px; margin-top:0; }
+.wx-search { display:inline-flex; align-items:center; gap:9px; background:var(--pink); color:#fff;
+  font-size:15px; font-weight:500; padding:11px 18px; border-radius:10px; }
+.wx-mag { width:13px; height:13px; border:2px solid rgba(255,255,255,.95); border-radius:50%;
+  position:relative; flex-shrink:0; }
+.wx-mag::after { content:''; position:absolute; width:6px; height:2px; background:rgba(255,255,255,.95);
+  transform:rotate(45deg); right:-5px; bottom:-2px; }
+
+/* ── 搜索工具条 ───────────────────────────────────── */
+.toolbar { position:sticky; top:52px; z-index:15; background:rgba(252,251,248,.94);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:10px 0; }
+.toolbar .wrap { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+#q { flex:1 1 200px; min-width:170px; border:1px solid var(--line); background:#fff; border-radius:10px;
+  padding:10px 14px; font-size:16px; color:var(--ink); outline:none; font-family:inherit; }
 #q:focus { border-color:#D9A9A9; box-shadow:0 0 0 3px #F7EDEC; }
-.chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
+.chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
 .chip { white-space:nowrap; font-size:12.5px; color:#5F5D57; border:1px solid var(--line); background:#fff;
-  padding:6px 11px; border-radius:999px; text-decoration:none; }
+  padding:8px 12px; border-radius:999px; text-decoration:none; }
 .chip:hover { border-color:#D9A9A9; color:var(--red); }
 
-.series { padding:44px 0 4px; }
-.series + .series { border-top:1px solid var(--line); margin-top:26px; }
-.series-head { margin-bottom:22px; }
-.series-meta { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+/* ── 系列 / 章节 / 条目 ───────────────────────────── */
+.series { padding:38px 0 4px; }
+.series + .series { border-top:1px solid var(--line); margin-top:24px; }
+.series-head { margin-bottom:16px; }
+.series-meta { display:flex; align-items:center; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
 .series-no { font-size:11.5px; letter-spacing:.16em; color:var(--red); border:1px solid #E7C9C9;
   background:#FDF6F5; border-radius:999px; padding:3px 10px; }
 .series-count { font-size:12.5px; color:#B4B0A5; }
-.series-head h2 { font-size:26px; font-weight:500; letter-spacing:-.2px; }
+.series-head h2 { font-size:23px; font-weight:500; letter-spacing:-.2px; }
 .series-head p { color:#6B6961; font-size:14px; max-width:680px; margin-top:6px; }
-.series-body { border-left:2px solid #F0EBE1; padding-left:22px; margin-left:2px; }
+.series-body { border-left:2px solid #F0EBE1; padding-left:16px; margin-left:2px; }
 
-.chapter { padding:14px 0 10px; }
-.ch-head { display:flex; align-items:center; gap:11px; margin-bottom:12px; }
+details.chapter { padding:10px 0 6px; }
+details.chapter + details.chapter { border-top:1px dashed #EFEBE2; }
+details.chapter > summary { list-style:none; cursor:pointer; }
+details.chapter > summary::-webkit-details-marker { display:none; }
+.ch-head { display:flex; align-items:center; gap:10px; padding:8px 0; min-height:44px; }
 .ch-num { font-size:12px; font-weight:500; color:var(--red); border:1px solid #E7C9C9; background:#FDF6F5;
   border-radius:6px; padding:2px 8px; white-space:nowrap; }
-.ch-head h3 { font-size:16px; font-weight:500; }
+.ch-head h3 { font-size:15.5px; font-weight:500; }
 .ch-count { font-size:12.5px; color:#B4B0A5; margin-left:auto; }
-.ch-desc { font-size:12.5px; color:#9A968B; margin:-6px 0 12px 2px; }
+.ch-arrow { color:#B4B0A5; font-size:15px; transition:transform .2s; margin-left:6px; }
+details[open] > summary .ch-arrow { transform:rotate(90deg); }
+.ch-desc { font-size:12.5px; color:#9A968B; margin:0 0 10px 2px; }
 
-.grid { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+.grid { list-style:none; display:grid; grid-template-columns:1fr; gap:8px; }
 .item a { display:flex; gap:12px; align-items:baseline; background:#fff; border:1px solid var(--line);
   border-radius:10px; padding:13px 15px; text-decoration:none; color:var(--ink); height:100%;
   transition:border-color .15s, transform .15s, box-shadow .15s; }
 .item a:hover { border-color:#DCC5C4; transform:translateY(-1px); box-shadow:0 2px 10px rgba(34,34,31,.05); }
 .qno { font-size:12px; color:#A8A399; font-variant-numeric:tabular-nums; min-width:40px; flex-shrink:0; }
-.qt { font-size:14px; line-height:1.55; flex:1; }
+.qt { font-size:14.5px; line-height:1.55; flex:1; }
 .note { display:block; color:#9A968B; font-size:12.5px; font-style:normal; margin-top:2px; }
 .tag { font-size:11px; color:#A8A399; border:1px solid var(--line); border-radius:4px;
   padding:1px 5px; align-self:center; flex-shrink:0; }
 
-.cta { margin:46px 0 0; padding:26px 28px; background:#fff; border:1px solid var(--line); border-radius:14px;
-  display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; }
+.cta { margin:40px 0 0; padding:22px 24px; background:#fff; border:1px solid var(--line); border-radius:14px;
+  display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
 .cta h3 { font-size:16px; font-weight:500; }
 .cta p { font-size:13.5px; color:#77756E; margin-top:4px; }
 .btn { display:inline-block; background:var(--red); color:#fff; text-decoration:none; font-size:14px;
-  padding:10px 20px; border-radius:9px; }
+  border:none; padding:11px 22px; border-radius:9px; cursor:pointer; font-family:inherit; }
 .btn:hover { background:#96191D; }
-.foot { color:#B4B0A5; font-size:12.5px; text-align:center; padding:36px 0 50px; }
+.foot { color:#B4B0A5; font-size:12.5px; text-align:center; padding:34px 0 90px; }
 .empty { display:none; text-align:center; color:#A8A399; font-size:14px; padding:40px 0; }
 
-@media (max-width:640px) {
-  .hero { padding:42px 0 24px; }
-  h1 { font-size:28px; } h1 span { display:block; font-size:15px; margin:8px 0 0; }
-  .stat b { font-size:21px; } .stats { gap:20px; }
-  .series-head h2 { font-size:21px; }
-  .series-body { padding-left:14px; }
-  .grid { grid-template-columns:1fr; }
-  .cta { flex-direction:column; align-items:flex-start; }
+/* ── 联系抽屉：手机从底部弹出，桌面居中 ─────────────── */
+.overlay { position:fixed; inset:0; background:rgba(20,20,18,.45); opacity:0; pointer-events:none;
+  transition:opacity .2s; z-index:50; }
+.overlay.on { opacity:1; pointer-events:auto; }
+.sheet { position:fixed; left:50%; bottom:0; transform:translate(-50%,105%); width:min(430px,100%);
+  background:#fff; border-radius:18px 18px 0 0; z-index:51; padding:12px 22px 30px;
+  transition:transform .25s ease; text-align:center; }
+.sheet.on { transform:translate(-50%,0); }
+.sheet-grab { width:40px; height:4px; border-radius:2px; background:#D3D1C7; margin:0 auto 10px; }
+.sheet-head { display:flex; align-items:center; }
+.sheet-head h3 { font-size:17px; font-weight:500; flex:1; text-align:left; }
+.sheet-x { border:none; background:none; font-size:22px; color:#888780; cursor:pointer;
+  padding:6px 10px; line-height:1; }
+.sheet-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:14px 0 6px; }
+.sheet-grid img { width:100%; max-width:150px; border:1px solid var(--line); border-radius:10px; }
+.sheet-grid .s-col { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.s-label { font-size:13px; font-weight:500; }
+.s-sub { font-size:11.5px; color:#A8A399; }
+.sheet .wx-search { font-size:14px; padding:8px 14px; margin-top:4px; }
+.sheet-note { font-size:12.5px; color:#77756E; border-top:1px dashed #EFEBE2; margin-top:14px; padding-top:12px; }
+
+/* ── 桌面端增强 ───────────────────────────────────── */
+@media (min-width:768px) {
+  .wrap { padding:0 24px; }
+  .hero { padding:64px 0 28px; }
+  h1 { font-size:38px; } h1 span { font-size:19px; }
+  .stat b { font-size:26px; } .stats { gap:34px; }
+  .c-grid { grid-template-columns:1fr 1px 1fr; align-items:stretch; }
+  .c-divider { display:block; background:var(--line); }
+  .c-qr { width:150px; height:150px; }
+  .series-head h2 { font-size:26px; }
+  .series-body { padding-left:22px; }
+  .grid { grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+  #q { font-size:14px; padding:9px 14px; }
+  .sheet { bottom:auto; top:50%; transform:translate(-50%,-46%); border-radius:18px; opacity:0;
+    pointer-events:none; transition:opacity .2s, transform .2s; }
+  .sheet.on { transform:translate(-50%,-50%); opacity:1; pointer-events:auto; }
+  .sheet-grab { display:none; }
+}
+@media (min-width:460px) and (max-width:767px) {
+  .c-grid { grid-template-columns:1fr 1px 1fr; align-items:stretch; }
+  .c-divider { display:block; background:var(--line); }
 }
 </style>
 </head>
 <body>
-<header class="hero">
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#"><i>罗</i>存储罗盘<em>storage-compass</em></a>
+    <button class="top-cta" id="contactBtn" type="button">联系</button>
+  </div>
+</header>
+
+<section class="hero">
   <div class="wrap">
     <span class="kicker">公开知识库</span>
     <h1>存储罗盘<span>storage-compass</span></h1>
@@ -96,7 +182,35 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
       <span class="stat"><b>100</b>问连载中</span>
     </div>
   </div>
-</header>
+</section>
+
+<!-- 首屏联系卡：不用滚动到底 -->
+<section class="contact">
+  <div class="wrap">
+    <div class="contact-card">
+      <div class="c-grid">
+        <div class="c-col">
+          <span class="c-tag">一对一交流</span>
+          <h3>加我微信</h3>
+          <p>选型、扩容、项目合作，直接找我</p>
+          <img class="c-qr" src="card/qr-wechat.png" alt="个人微信二维码">
+          <span class="c-hint">微信内长按识别 · 加我后回复「进群」可入同行群</span>
+        </div>
+        <div class="c-divider"></div>
+        <div class="c-col">
+          <span class="c-tag pink">公众号</span>
+          <h3>关注「存储罗盘」</h3>
+          <p>连载更新，第一时间收到新文章</p>
+          <div class="wx-row">
+            <img class="c-qr" src="assets/wx-qr.jpg" alt="公众号二维码">
+            <span class="wx-search"><span class="wx-mag"></span>存储罗盘</span>
+          </div>
+          <span class="c-hint">微信搜一搜「存储罗盘」，或长按二维码识别</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="toolbar">
   <div class="wrap">
@@ -119,10 +233,11 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
       <p>从原理到选型判断的连续追问：每篇给结论、机制、取舍与适用边界，编号稳定、可长期引用。</p>
     </div>
     <div class="series-body">
-      <div class="chapter" id="ch1">
-        <div class="ch-head"><span class="ch-num">第一章</span>
-          <h3>基础认知</h3><span class="ch-count">15 篇</span></div>
-        <ul class="grid">
+      <details class="chapter" id="ch1">
+        <summary class="ch-head"><span class="ch-num">第一章</span>
+          <h3>基础认知</h3><span class="ch-count">15 篇</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">
+          <ul class="grid">
 <li class="item" data-k="q001 企业为什么需要专业存储？"><a href="https://mp.weixin.qq.com/s/cPwX4JZotfxx-3ID5WwmkA" target="_blank" rel="noopener"><span class="qno">Q001</span><span class="qt">企业为什么需要专业存储？</span></a></li>
 <li class="item" data-k="q002 nas、san 与对象存储的差别是什么？"><a href="https://mp.weixin.qq.com/s/F2BsR0ZMa8z9EO4UPmj5og" target="_blank" rel="noopener"><span class="qno">Q002</span><span class="qt">NAS、SAN 与对象存储的差别是什么？</span></a></li>
 <li class="item" data-k="q003 一个 i/o 请求进入存储系统后发生了什么？"><a href="https://mp.weixin.qq.com/s/HCJYjuj7qTVH_QWNEBPu4w" target="_blank" rel="noopener"><span class="qno">Q003</span><span class="qt">一个 I/O 请求进入存储系统后发生了什么？</span></a></li>
@@ -138,12 +253,14 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
 <li class="item" data-k="q013 数据增长率如何影响企业级存储架构？"><a href="https://mp.weixin.qq.com/s/frAMWReZRr4HMxazoLEmYQ" target="_blank" rel="noopener"><span class="qno">Q013</span><span class="qt">数据增长率如何影响企业级存储架构？</span></a></li>
 <li class="item" data-k="q014 什么是 rpo 与 rto，它们如何影响存储设计？"><a href="https://mp.weixin.qq.com/s/w2y502iT3XIYiullDnWrHw" target="_blank" rel="noopener"><span class="qno">Q014</span><span class="qt">什么是 RPO 与 RTO，它们如何影响存储设计？</span></a></li>
 <li class="item" data-k="q015 企业存储项目最常见的误区是什么？"><a href="https://mp.weixin.qq.com/s/EpwHbaoufBk6d5R6eEuE-A" target="_blank" rel="noopener"><span class="qno">Q015</span><span class="qt">企业存储项目最常见的误区是什么？</span></a></li>
-        </ul>
-      </div>
-      <div class="chapter" id="ch2">
-        <div class="ch-head"><span class="ch-num">第二章</span>
-          <h3>协议与接口</h3><span class="ch-count">15 篇</span></div>
-        <ul class="grid">
+          </ul>
+        </div>
+      </details>
+      <details class="chapter" id="ch2">
+        <summary class="ch-head"><span class="ch-num">第二章</span>
+          <h3>协议与接口</h3><span class="ch-count">15 篇</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">
+          <ul class="grid">
 <li class="item" data-k="q016 nfs 是什么，适合哪些企业文件业务？"><a href="https://mp.weixin.qq.com/s/fETuxKow5L9nNHUZtOmh0A" target="_blank" rel="noopener"><span class="qno">Q016</span><span class="qt">NFS 是什么，适合哪些企业文件业务？</span></a></li>
 <li class="item" data-k="q017 smb 是什么，和 nfs 的主要差异是什么？"><a href="https://mp.weixin.qq.com/s/XQ6iHVszJ1CRoTFZr_Sx5Q" target="_blank" rel="noopener"><span class="qno">Q017</span><span class="qt">SMB 是什么，和 NFS 的主要差异是什么？</span></a></li>
 <li class="item" data-k="q018 iscsi 与 fibre channel 如何选择？"><a href="https://mp.weixin.qq.com/s/IYBhjAZHanHzpJLaQ0VWgA" target="_blank" rel="noopener"><span class="qno">Q018</span><span class="qt">iSCSI 与 Fibre Channel 如何选择？</span></a></li>
@@ -159,12 +276,14 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
 <li class="item" data-k="q028 kubernetes、数据库和虚拟化分别常用哪些存储接口？"><a href="https://mp.weixin.qq.com/s/RDalv2zvhH9BsemTbCxt4g" target="_blank" rel="noopener"><span class="qno">Q028</span><span class="qt">Kubernetes、数据库和虚拟化分别常用哪些存储接口？</span></a></li>
 <li class="item" data-k="q029 对象存储的 s3 api 与传统文件系统如何协同？"><a href="https://mp.weixin.qq.com/s/rz8R8kiUCRSs1NvA_AFFrQ" target="_blank" rel="noopener"><span class="qno">Q029</span><span class="qt">对象存储的 S3 API 与传统文件系统如何协同？</span></a></li>
 <li class="item" data-k="q030 协议迁移时如何降低业务中断风险？"><a href="https://mp.weixin.qq.com/s/tT0GJjQYRkAnn-R0Suz67Q" target="_blank" rel="noopener"><span class="qno">Q030</span><span class="qt">协议迁移时如何降低业务中断风险？</span></a></li>
-        </ul>
-      </div>
-      <div class="chapter" id="ch3">
-        <div class="ch-head"><span class="ch-num">第三章</span>
-          <h3>架构与数据路径</h3><span class="ch-count">15 篇</span></div>
-        <ul class="grid">
+          </ul>
+        </div>
+      </details>
+      <details class="chapter" id="ch3">
+        <summary class="ch-head"><span class="ch-num">第三章</span>
+          <h3>架构与数据路径</h3><span class="ch-count">15 篇</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">
+          <ul class="grid">
 <li class="item" data-k="q031 存储控制器在系统中做什么？"><a href="https://mp.weixin.qq.com/s/-yRMfBVRH5U0PSWqZd92cg" target="_blank" rel="noopener"><span class="qno">Q031</span><span class="qt">存储控制器在系统中做什么？</span></a></li>
 <li class="item" data-k="q032 缓存如何提升性能，又带来哪些一致性风险？"><a href="https://mp.weixin.qq.com/s/OChPw-DYllSoYQyPpm5deA" target="_blank" rel="noopener"><span class="qno">Q032</span><span class="qt">缓存如何提升性能，又带来哪些一致性风险？</span></a></li>
 <li class="item" data-k="q033 写入确认发生在缓存、日志和磁盘的哪个阶段？"><a href="https://mp.weixin.qq.com/s/s70VAnxuT9P11WFIEoM1bA" target="_blank" rel="noopener"><span class="qno">Q033</span><span class="qt">写入确认发生在缓存、日志和磁盘的哪个阶段？</span></a></li>
@@ -180,12 +299,14 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
 <li class="item" data-k="q043 存储虚拟化解决什么问题，又增加什么复杂度？"><a href="https://mp.weixin.qq.com/s/jcfhxZySJO-jyKx9hSNBdA" target="_blank" rel="noopener"><span class="qno">Q043</span><span class="qt">存储虚拟化解决什么问题，又增加什么复杂度？</span></a></li>
 <li class="item" data-k="q044 分层存储何时有效，何时只会增加运维负担？"><a href="https://mp.weixin.qq.com/s/z6wHftiFuE5f2AIdIKcY2Q" target="_blank" rel="noopener"><span class="qno">Q044</span><span class="qt">分层存储何时有效，何时只会增加运维负担？</span></a></li>
 <li class="item" data-k="q045 如何画出一个业务的端到端 i/o 路径？"><a href="https://mp.weixin.qq.com/s/Y2medoWtv2DJsi2ZYebelw" target="_blank" rel="noopener"><span class="qno">Q045</span><span class="qt">如何画出一个业务的端到端 I/O 路径？</span></a></li>
-        </ul>
-      </div>
-      <div class="chapter" id="ch4">
-        <div class="ch-head"><span class="ch-num">第四章</span>
-          <h3>可靠性与性能</h3><span class="ch-count">15 篇</span></div>
-        <ul class="grid">
+          </ul>
+        </div>
+      </details>
+      <details class="chapter" id="ch4">
+        <summary class="ch-head"><span class="ch-num">第四章</span>
+          <h3>可靠性与性能</h3><span class="ch-count">15 篇</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">
+          <ul class="grid">
 <li class="item" data-k="q046 raid 5、raid 6 和 raid 10 如何取舍？"><a href="https://mp.weixin.qq.com/s/dz7wUl0r8cIPrUwGZ5scJQ" target="_blank" rel="noopener"><span class="qno">Q046</span><span class="qt">RAID 5、RAID 6 和 RAID 10 如何取舍？</span></a></li>
 <li class="item" data-k="q047 磁盘重建窗口为什么是可靠性风险？"><a href="https://mp.weixin.qq.com/s/a4b7ix5lJqXv9xSveMQepA" target="_blank" rel="noopener"><span class="qno">Q047</span><span class="qt">磁盘重建窗口为什么是可靠性风险？</span></a></li>
 <li class="item" data-k="q048 纠删码适合哪些容量型负载？"><a href="https://mp.weixin.qq.com/s/8hP_4-YBqHA2d5n-7L7cXg" target="_blank" rel="noopener"><span class="qno">Q048</span><span class="qt">纠删码适合哪些容量型负载？</span></a></li>
@@ -201,19 +322,22 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
 <li class="item" data-k="q058 存储告警应优先关注哪些容量与性能信号？"><a href="https://mp.weixin.qq.com/s/otHB6frVQa4PfPcAb972DQ" target="_blank" rel="noopener"><span class="qno">Q058</span><span class="qt">存储告警应优先关注哪些容量与性能信号？</span></a></li>
 <li class="item" data-k="q059 固件、驱动和多路径升级如何降低风险？"><a href="https://mp.weixin.qq.com/s/jzK5wSEh5L2woWlcU6dnuQ" target="_blank" rel="noopener"><span class="qno">Q059</span><span class="qt">固件、驱动和多路径升级如何降低风险？</span></a></li>
 <li class="item" data-k="q060 一次存储故障复盘应包含哪些证据？"><a href="https://mp.weixin.qq.com/s/ThKfLA-DbuHJ8zDZKfNBBQ" target="_blank" rel="noopener"><span class="qno">Q060</span><span class="qt">一次存储故障复盘应包含哪些证据？</span></a></li>
-        </ul>
-      </div>
-      <div class="chapter" id="ch5">
-        <div class="ch-head"><span class="ch-num">第五章</span>
-          <h3>分布式与云</h3><span class="ch-count">5 篇</span></div>
-        <ul class="grid">
+          </ul>
+        </div>
+      </details>
+      <details class="chapter" id="ch5">
+        <summary class="ch-head"><span class="ch-num">第五章</span>
+          <h3>分布式与云</h3><span class="ch-count">5 篇</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body">
+          <ul class="grid">
 <li class="item" data-k="q061 分布式存储为什么能横向扩展？"><a href="https://mp.weixin.qq.com/s/gL6nmw2Txws_Eo_s4C5vRw" target="_blank" rel="noopener"><span class="qno">Q061</span><span class="qt">分布式存储为什么能横向扩展？</span></a></li>
 <li class="item" data-k="q062 ceph 的 rados、mon、osd 与 crush 各自做什么？"><a href="https://mp.weixin.qq.com/s/HKDPKcgpBH2kqnjsrJmI9Q" target="_blank" rel="noopener"><span class="qno">Q062</span><span class="qt">Ceph 的 RADOS、MON、OSD 与 CRUSH 各自做什么？</span></a></li>
 <li class="item" data-k="q063 ceph 为什么可以同时提供块、文件和对象服务？"><a href="https://mp.weixin.qq.com/s/Ge_gG4G2c5KLab_i91dG4g" target="_blank" rel="noopener"><span class="qno">Q063</span><span class="qt">Ceph 为什么可以同时提供块、文件和对象服务？</span></a></li>
 <li class="item" data-k="q064 分布式存储的副本数和纠删码如何选择？"><a href="https://mp.weixin.qq.com/s/zEn6Ir9d_wsJRrsfuGNZww" target="_blank" rel="noopener"><span class="qno">Q064</span><span class="qt">分布式存储的副本数和纠删码如何选择？</span></a></li>
 <li class="item" data-k="q065 都说带宽够，为什么故障恢复时还是卡？"><a href="https://mp.weixin.qq.com/s/MxxyckAN3lTNTt_EvSo3LQ" target="_blank" rel="noopener"><span class="qno">Q065</span><span class="qt">都说带宽够，为什么故障恢复时还是卡？</span></a></li>
-        </ul>
-      </div>
+          </ul>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -225,19 +349,20 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
       <p>大模型推理把存储重新拉回架构核心：KV Cache 放哪、带宽从哪来、PD 与存算如何分离。这一系列只讲能落到机房里的判断。</p>
     </div>
     <div class="series-body">
-      <div class="chapter" id="ai1">
-        <div class="ch-head"><span class="ch-num">AI</span>
-          <h3>KV Cache 六讲</h3><span class="ch-count">6 讲</span></div>
-        <p class="ch-desc">从一次推理请求的旅程，讲到企业级推理架构的落地顺序</p>
-        <ul class="grid">
+      <details class="chapter" id="ai1">
+        <summary class="ch-head"><span class="ch-num">AI</span>
+          <h3>KV Cache 六讲</h3><span class="ch-count">6 讲</span><span class="ch-arrow">›</span></summary>
+        <div class="ch-body"><p class="ch-desc">从一次推理请求的旅程，讲到企业级推理架构的落地顺序</p>
+          <ul class="grid">
 <li class="item" data-k="第1讲 模型为什么不能直接给答案？ 一次推理请求的完整旅程"><a href="https://mp.weixin.qq.com/s/IUrhhro7XZYgFW6R-T7RBg" target="_blank" rel="noopener"><span class="qno">第1讲</span><span class="qt">模型为什么不能直接给答案？<em class="note">一次推理请求的完整旅程</em></span></a></li>
 <li class="item" data-k="第2讲 kv cache 到底缓存了什么？ k/v 张量为何随序列线性膨胀"><a href="https://mp.weixin.qq.com/s/FvR--NyGDy0eMbFVmLFlaQ" target="_blank" rel="noopener"><span class="qno">第2讲</span><span class="qt">KV Cache 到底缓存了什么？<em class="note">K/V 张量为何随序列线性膨胀</em></span></a></li>
 <li class="item" data-k="第3讲 装不下了，延迟和显存为何同时告急 显存不足如何传导为并发下降"><a href="https://mp.weixin.qq.com/s/iweY7rpUYspn1GGxjUVURg" target="_blank" rel="noopener"><span class="qno">第3讲</span><span class="qt">装不下了，延迟和显存为何同时告急<em class="note">显存不足如何传导为并发下降</em></span></a></li>
 <li class="item" data-k="第4讲 不够用了，究竟有几类解决办法 驱逐 / 量化 / 共享 / 下沉的代价"><a href="https://mp.weixin.qq.com/s/ZxsIfohvzl8w7VxxIaPDMw" target="_blank" rel="noopener"><span class="qno">第4讲</span><span class="qt">不够用了，究竟有几类解决办法<em class="note">驱逐 / 量化 / 共享 / 下沉的代价</em></span></a></li>
 <li class="item" data-k="第5讲 能不能放到 ssd，答案不在 ssd 有多快 落盘瓶颈在访问模式"><a href="https://mp.weixin.qq.com/s/0FGCsdislK28xeRNQYtjhA" target="_blank" rel="noopener"><span class="qno">第5讲</span><span class="qt">能不能放到 SSD，答案不在 SSD 有多快<em class="note">落盘瓶颈在访问模式</em></span></a></li>
 <li class="item" data-k="第6讲 先做 pd 分离，再做存算分离 企业级推理架构的落地顺序"><a href="https://mp.weixin.qq.com/s/Swm9M_wLfoYLKK9FVFX75A" target="_blank" rel="noopener"><span class="qno">第6讲</span><span class="qt">先做 PD 分离，再做存算分离<em class="note">企业级推理架构的落地顺序</em></span></a></li>
-        </ul>
-      </div>
+          </ul>
+        </div>
+      </details>
     </div>
   </section>
 
@@ -246,20 +371,45 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
   <section class="cta">
     <div><h3>存储选型、架构讨论、同行交流</h3>
       <p>全闪阵列、SAN / 灾备、信创存储与 AI 基础设施的一线信息，随时聊。</p></div>
-    <a class="btn" href="card/">联系方式 →</a>
+    <button class="btn" id="ctaBtn" type="button">联系方式 →</button>
   </section>
 
   <p class="foot">© 2026 赵龙杰 · 中科曙光 FlashNexus · 公众号「存储罗盘」同步连载</p>
 </main>
+
+<!-- 联系抽屉 -->
+<div class="overlay" id="overlay"></div>
+<div class="sheet" id="sheet" role="dialog" aria-label="联系方式">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head"><h3>联系我</h3><button class="sheet-x" id="sheetX" type="button" aria-label="关闭">×</button></div>
+  <div class="sheet-grid">
+    <div class="s-col">
+      <img src="card/qr-wechat.png" alt="个人微信二维码">
+      <span class="s-label">加我微信</span>
+      <span class="s-sub">微信内长按识别</span>
+    </div>
+    <div class="s-col">
+      <img src="assets/wx-qr.jpg" alt="公众号二维码">
+      <span class="s-label">关注公众号</span>
+      <span class="wx-search"><span class="wx-mag"></span>存储罗盘</span>
+    </div>
+  </div>
+  <p class="sheet-note">加我后回复「进群」可入同行群 · 公众号：搜一搜「存储罗盘」</p>
+</div>
 
 <script>
 (function(){
   var q = document.getElementById('q');
   var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
   var empties = document.getElementById('empty');
-  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('details.chapter'));
   var series = Array.prototype.slice.call(document.querySelectorAll('.series'));
   function vis(el){ return el.style.display !== 'none'; }
+  function isMobile(){ return window.innerWidth < 768; }
+  /* 桌面端默认全展开，手机端只展开第一章 */
+  if (!isMobile()) {
+    chapters.forEach(function(d){ d.open = true; });
+  }
   q.addEventListener('input', function(){
     var v = q.value.trim().toLowerCase(), shown = 0;
     items.forEach(function(it){
@@ -270,6 +420,8 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
     chapters.forEach(function(sec){
       var any = Array.prototype.some.call(sec.querySelectorAll('.item'), vis);
       sec.style.display = any ? '' : 'none';
+      if (v && any) { sec.open = true; }
+      else if (!v) { sec.open = !isMobile() || sec.id === 'ch1'; }
     });
     series.forEach(function(sec){
       var any = Array.prototype.some.call(sec.querySelectorAll('.item'), vis);
@@ -277,6 +429,16 @@ h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
     });
     empties.style.display = (v && shown === 0) ? 'block' : 'none';
   });
+  /* 联系抽屉 */
+  var overlay = document.getElementById('overlay');
+  var sheet = document.getElementById('sheet');
+  function openSheet(){ overlay.classList.add('on'); sheet.classList.add('on'); document.body.style.overflow='hidden'; }
+  function closeSheet(){ overlay.classList.remove('on'); sheet.classList.remove('on'); document.body.style.overflow=''; }
+  document.getElementById('contactBtn').addEventListener('click', openSheet);
+  document.getElementById('ctaBtn').addEventListener('click', openSheet);
+  document.getElementById('sheetX').addEventListener('click', closeSheet);
+  overlay.addEventListener('click', closeSheet);
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeSheet(); });
 })();
 </script>
 </body>
