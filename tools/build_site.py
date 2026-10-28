@@ -6,13 +6,21 @@
 新增系列：在 SERIES_AI 同级的列表里加一个 dict 即可。
 用法:  python tools/build_site.py   （在 storage-compass 仓库根目录运行）
 """
-import os, re, glob, html, subprocess
+import os, re, glob, html, json, subprocess
 
 PUB = 'content/published'
 INDEX_MD = 'content/100-questions/README.md'
+MP_LINKS = 'tools/mp-links.json'
 REPO = 'https://github.com/zlj123455/storage-compass'
 BLOB = REPO + '/blob/main/content/published/'
 SITE = 'https://zlj123455.github.io/storage-compass'
+
+
+def load_mp_links():
+    """公众号原文链接：{'Q001': url, ...}；缺失的条目回退到 GitHub 正文。"""
+    if os.path.exists(MP_LINKS):
+        return json.load(open(MP_LINKS, encoding='utf-8'))
+    return {}
 
 # ── 系列二：AI 推理与存储（未来可继续加子专题）────────────────────────
 AI_GROUPS = [
@@ -93,6 +101,7 @@ def item_html(key, no, title, note, href, tag=None):
 def build():
     qs = collect_questions()
     chap_map, chap_order = load_chapters()
+    mp = load_mp_links()
 
     groups = {}
     for n, (stamp, b, t) in qs.items():
@@ -111,8 +120,8 @@ def build():
         anchor = 'ch%d' % seq
         chips.append('<a class="chip" href="#%s">%s · %s</a>'
                      % (anchor, '第%s章' % (cn_num[i] if i < 10 else i + 1), html.escape(ch[1])))
-        cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '', BLOB + b)
-                          for n, b, t in items)
+        cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '',
+                                    mp.get('Q%03d' % n, BLOB + b)) for n, b, t in items)
         s1_chapters.append('''      <div class="chapter" id="%s">
         <div class="ch-head"><span class="ch-num">%s</span>
           <h3>%s</h3><span class="ch-count">%d 篇</span></div>
@@ -124,8 +133,8 @@ def build():
 
     extras = groups.get(None, [])
     if extras:
-        cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '', BLOB + b)
-                          for n, b, t in extras)
+        cards = '\n'.join(item_html('q%03d %s' % (n, t), 'Q%03d' % n, t, '',
+                                    mp.get('Q%03d' % n, BLOB + b)) for n, b, t in extras)
         chips.append('<a class="chip" href="#chx">其他主题</a>')
         s1_chapters.append('''      <div class="chapter" id="chx">
         <div class="ch-head"><span class="ch-num">+</span><h3>其他主题</h3>
@@ -140,7 +149,7 @@ def build():
     series_html = ['''  <section class="series" id="s1">
     <div class="series-head">
       <div class="series-meta"><span class="series-no">系列 01</span>
-        <span class="series-count">%d 篇 · %d 章</span></div>
+        <span class="series-count">%d 篇 · %d 章 · 公众号原文</span></div>
       <h2>企业存储架构师 100 问</h2>
       <p>从原理到选型判断的连续追问：每篇给结论、机制、取舍与适用边界，编号稳定、可长期引用。</p>
     </div>
@@ -155,7 +164,7 @@ def build():
         ai_total += len(items)
         anchor = 'ai%d' % (gi + 1)
         chips.append('<a class="chip" href="#%s">%s</a>' % (anchor, html.escape(gname)))
-        cards = '\n'.join(item_html('%s %s %s' % (lab, t, s), lab, t, s, u, tag='公众号')
+        cards = '\n'.join(item_html('%s %s %s' % (lab, t, s), lab, t, s, u)
                           for lab, t, s, u in items)
         ai_blocks.append('''      <div class="chapter" id="%s">
         <div class="ch-head"><span class="ch-num">AI</span>
@@ -169,7 +178,7 @@ def build():
     series_html.append('''  <section class="series" id="s2">
     <div class="series-head">
       <div class="series-meta"><span class="series-no">系列 02</span>
-        <span class="series-count">%d 讲 · 持续更新</span></div>
+        <span class="series-count">%d 讲 · 持续更新 · 公众号原文</span></div>
       <h2>AI 推理与存储</h2>
       <p>大模型推理把存储重新拉回架构核心：KV Cache 放哪、带宽从哪来、PD 与存算如何分离。这一系列只讲能落到机房里的判断。</p>
     </div>
