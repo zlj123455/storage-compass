@@ -3,126 +3,261 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>存储罗盘 · 企业存储与 AI 基础设施</title>
-<meta name="description" content="面向企业架构师、IT 负责人和存储选型团队的公开知识库，聚焦企业存储架构、可靠性、性能与选型判断。">
+<title>存储罗盘 · 企业存储与 AI 基础设施知识库</title>
+<meta name="description" content="面向企业架构师、IT 负责人与存储选型团队的公开知识库：企业存储架构、可靠性、性能、选型判断，以及 AI 推理对存储的需求。">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; background:#FAF9F6; color:#2C2C2A; line-height:1.7; padding:40px 20px 60px; }
-main { max-width:760px; margin:0 auto; }
-h1 { font-size:24px; font-weight:500; }
-h1 .en { color:#B01F24; }
-.sub { color:#6B6A66; font-size:14px; margin:8px 0 8px; }
-.meta { color:#B4B2A9; font-size:12.5px; margin-bottom:22px; }
-.card { background:#fff; border:1px solid #E8E5DE; border-radius:12px; padding:20px 22px; margin-bottom:16px; }
-.card h2 { font-size:15px; font-weight:500; color:#B01F24; margin-bottom:4px; }
-.card .desc { color:#888780; font-size:13px; margin-bottom:10px; }
-ol { list-style:none; }
-li { padding:6px 0; border-bottom:1px dashed #EFEBE2; font-size:14px; }
-li:last-child { border-bottom:none; }
-.qno { display:inline-block; min-width:52px; color:#888780; font-size:12.5px; }
-.note { display:block; color:#888780; font-size:12.5px; font-style:normal; padding-left:52px; margin-top:2px; }
-a { color:#185FA5; text-decoration:none; }
-a:hover { text-decoration:underline; }
-.foot { color:#B4B2A9; font-size:12.5px; text-align:center; margin-top:24px; }
+:root { --red:#B01F24; --ink:#22221F; --muted:#77756E; --line:#E9E5DC; --paper:#FCFBF8; }
+body { font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  background:var(--paper); color:var(--ink); line-height:1.65; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1040px; margin:0 auto; padding:0 24px; }
+
+.hero { padding:72px 0 32px; border-bottom:1px solid var(--line); }
+.kicker { display:inline-block; font-size:12px; letter-spacing:.18em; color:var(--red);
+  border:1px solid #E7C9C9; padding:4px 10px; border-radius:999px; background:#FDF6F5; }
+h1 { font-size:38px; font-weight:500; letter-spacing:-.5px; margin:18px 0 10px; }
+h1 span { color:#B9B5AA; font-size:20px; letter-spacing:0; margin-left:10px; }
+.lede { color:#5F5D57; font-size:15.5px; max-width:640px; }
+.stats { display:flex; gap:34px; margin:26px 0 0; flex-wrap:wrap; }
+.stat b { font-size:26px; font-weight:500; color:var(--red); margin-right:6px; }
+.stat { font-size:13px; color:var(--muted); }
+
+.toolbar { position:sticky; top:0; z-index:9; background:rgba(252,251,248,.94);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:12px 0; margin-bottom:8px; }
+.toolbar .wrap { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+#q { flex:1 1 240px; min-width:200px; border:1px solid var(--line); background:#fff; border-radius:10px;
+  padding:9px 14px; font-size:14px; color:var(--ink); outline:none; }
+#q:focus { border-color:#D9A9A9; box-shadow:0 0 0 3px #F7EDEC; }
+.chips { display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; }
+.chip { white-space:nowrap; font-size:12.5px; color:#5F5D57; border:1px solid var(--line); background:#fff;
+  padding:6px 11px; border-radius:999px; text-decoration:none; }
+.chip:hover { border-color:#D9A9A9; color:var(--red); }
+
+.chapter { padding:34px 0 6px; }
+.ch-head { display:flex; align-items:baseline; gap:14px; margin-bottom:16px; }
+.ch-num { font-size:13px; font-weight:500; color:var(--red); border:1px solid #E7C9C9; background:#FDF6F5;
+  border-radius:6px; padding:2px 7px; }
+.ch-title h2 { font-size:19px; font-weight:500; letter-spacing:.2px; }
+.ch-title p { font-size:12.5px; color:#B4B0A5; margin-top:2px; }
+
+.grid { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+.item a { display:flex; gap:12px; align-items:baseline; background:#fff; border:1px solid var(--line);
+  border-radius:10px; padding:13px 15px; text-decoration:none; color:var(--ink); height:100%;
+  transition:border-color .15s, transform .15s; }
+.item a:hover { border-color:#DCC5C4; transform:translateY(-1px); }
+.qno { font-size:12px; color:#A8A399; font-variant-numeric:tabular-nums; min-width:38px; }
+.qt { font-size:14px; line-height:1.55; }
+
+.ai-grid { list-style:none; display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:10px; }
+.ai-card a { display:flex; flex-direction:column; gap:6px; background:linear-gradient(180deg,#fff,#FDFAF7);
+  border:1px solid var(--line); border-left:3px solid var(--red); border-radius:10px; padding:16px 18px;
+  text-decoration:none; color:var(--ink); height:100%; }
+.ai-card a:hover { border-color:#DCC5C4; border-left-color:var(--red); }
+.lect { font-size:11.5px; color:var(--red); letter-spacing:.1em; }
+.ai-card b { font-size:14.5px; font-weight:500; line-height:1.5; }
+.ai-card i { font-size:12.5px; color:#8B877D; font-style:normal; }
+
+.cta { margin:44px 0 0; padding:26px 28px; background:#fff; border:1px solid var(--line); border-radius:14px;
+  display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; }
+.cta h3 { font-size:16px; font-weight:500; }
+.cta p { font-size:13.5px; color:#77756E; margin-top:4px; }
+.btn { display:inline-block; background:var(--red); color:#fff; text-decoration:none; font-size:14px;
+  padding:10px 20px; border-radius:9px; }
+.btn:hover { background:#96191D; }
+.foot { color:#B4B0A5; font-size:12.5px; text-align:center; padding:36px 0 50px; }
+.empty { display:none; text-align:center; color:#A8A399; font-size:14px; padding:40px 0; }
+
+@media (max-width:640px) {
+  .hero { padding:44px 0 26px; }
+  h1 { font-size:28px; } h1 span { font-size:15px; display:block; margin:8px 0 0; }
+  .stats { gap:20px; } .stat b { font-size:21px; }
+  .grid, .ai-grid { grid-template-columns:1fr; }
+  .cta { flex-direction:column; align-items:flex-start; }
+}
 </style>
 </head>
 <body>
-<main>
-  <h1><span class="en">存储罗盘</span> storage-compass</h1>
-  <p class="sub">面向企业架构师、IT 负责人和存储选型团队的公开知识库，聚焦企业存储架构、可靠性、性能与选型判断。</p>
-  <p class="meta">已发布 65 篇 / 6 篇 · 持续更新</p>
+<header class="hero">
+  <div class="wrap">
+    <span class="kicker">公开知识库</span>
+    <h1>存储罗盘<span>storage-compass</span></h1>
+    <p class="lede">面向企业架构师、IT 负责人与存储选型团队的公开知识库。只做一件事：把企业存储的架构、可靠性、性能与选型判断，讲成能直接用来做决策的话。</p>
+    <div class="stats">
+      <span class="stat"><b>65</b>篇问答</span>
+      <span class="stat"><b>5</b>个章节</span>
+      <span class="stat"><b>6</b>讲 AI 系列</span>
+    </div>
+  </div>
+</header>
 
-  <section class="card">
-    <h2>企业存储架构师 100 问</h2>
-    <p class="desc">从原理到选型判断的连续追问，每篇给结论、机制、取舍与适用边界。</p>
-    <ol>
-      <li><span class="qno">Q001</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q001-storage.md" target="_blank" rel="noopener">Q001：企业为什么需要专业存储？</a></li>
-      <li><span class="qno">Q002</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q002-storage-object.md" target="_blank" rel="noopener">Q002：NAS、SAN 与对象存储的差别是什么？</a></li>
-      <li><span class="qno">Q003</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q003-storage.md" target="_blank" rel="noopener">Q003：一个 I/O 请求进入存储系统后发生了什么？</a></li>
-      <li><span class="qno">Q004</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q004-storage.md" target="_blank" rel="noopener">Q004：企业存储为什么不直接使用普通服务器硬盘？</a></li>
-      <li><span class="qno">Q005</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q005-raid-ai-replication.md" target="_blank" rel="noopener">Q005: 有备份、有副本，RAID 今天还解决什么问题？</a></li>
-      <li><span class="qno">Q006</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q006-object-file.md" target="_blank" rel="noopener">Q006：块、文件、对象，别先问谁更快</a></li>
-      <li><span class="qno">Q007</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q007-capacity-cost.md" target="_blank" rel="noopener">Q007：容量、性能、可靠性、成本，别各选各的</a></li>
-      <li><span class="qno">Q008</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q008-business.md" target="_blank" rel="noopener">Q008：管理面绿灯，业务就一定正常吗</a></li>
-      <li><span class="qno">Q009</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q009-storage-cost.md" target="_blank" rel="noopener">Q009：同样 100TB，为什么存储价格差这么大？</a></li>
-      <li><span class="qno">Q010</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q010-storage-selection-business.md" target="_blank" rel="noopener">Q010：存储选型前，业务方必须提供哪些数据？</a></li>
-      <li><span class="qno">Q011</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q011-latency-iops-throughput.md" target="_blank" rel="noopener">Q011：IOPS、吞吐量和时延应如何一起理解？</a></li>
-      <li><span class="qno">Q012</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q012-storage-capacity.md" target="_blank" rel="noopener">Q012：存储的可用容量为什么常常小于采购容量？</a></li>
-      <li><span class="qno">Q013</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q013-storage-data.md" target="_blank" rel="noopener">Q013：数据增长率如何影响企业级存储架构？</a></li>
-      <li><span class="qno">Q014</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q014-rpo-rto-rto-storage.md" target="_blank" rel="noopener">Q014：什么是 RPO 与 RTO，它们如何影响存储设计？</a></li>
-      <li><span class="qno">Q015</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q015-storage-pitfalls.md" target="_blank" rel="noopener">Q015：企业存储项目最常见的误区是什么？</a></li>
-      <li><span class="qno">Q016</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q016-nfs-file-business.md" target="_blank" rel="noopener">Q016：NFS 是什么，适合哪些企业文件业务？</a></li>
-      <li><span class="qno">Q017</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q017-nfs-smb.md" target="_blank" rel="noopener">Q017：SMB 是什么，和 NFS 的主要差异是什么？</a></li>
-      <li><span class="qno">Q018</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q018-iscsi-fibre-channel.md" target="_blank" rel="noopener">Q018：iSCSI 与 Fibre Channel 如何选择？</a></li>
-      <li><span class="qno">Q019</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q019-nvme.md" target="_blank" rel="noopener">Q019：NVMe over Fabrics 解决了什么问题？</a></li>
-      <li><span class="qno">Q020</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q020-fibre-channel-nvme.md" target="_blank" rel="noopener">Q020：NVMe/TCP、RoCE 和 Fibre Channel-NVMe 的取舍是什么？</a></li>
-      <li><span class="qno">Q021</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q021-controller-multipath-failure.md" target="_blank" rel="noopener">Q021：多路径如何避免单链路或单控制器故障？</a></li>
-      <li><span class="qno">Q022</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q022-cache-protocol-file.md" target="_blank" rel="noopener">Q022：文件锁、缓存一致性与协议选择有什么关系？</a></li>
-      <li><span class="qno">Q023</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q023-mount-business.md" target="_blank" rel="noopener">Q023：客户端挂载参数为什么会改变业务体验？</a></li>
-      <li><span class="qno">Q024</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q024-protocol.md" target="_blank" rel="noopener">Q024：小 IO、大 IO、顺序与随机访问如何影响协议表现？</a></li>
-      <li><span class="qno">Q025</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q025-rdma-storage.md" target="_blank" rel="noopener">Q025：什么是 RDMA，它在存储网络中何时值得使用？</a></li>
-      <li><span class="qno">Q026</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q026-mtu-storage-latency.md" target="_blank" rel="noopener">Q026：存储网络的 MTU、拥塞与丢包如何影响时延？</a></li>
-      <li><span class="qno">Q027</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q027-storage-bandwidth.md" target="_blank" rel="noopener">Q027：为什么不能只看链路带宽判断存储性能？</a></li>
-      <li><span class="qno">Q028</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q028-kubernetes-storage-virtualization.md" target="_blank" rel="noopener">Q028：Kubernetes、数据库和虚拟化分别常用哪些存储接口？</a></li>
-      <li><span class="qno">Q029</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q029-s3-api-storage-object.md" target="_blank" rel="noopener">Q029：对象存储的 S3 API 与传统文件系统如何协同？</a></li>
-      <li><span class="qno">Q030</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q030-migration-protocol-business.md" target="_blank" rel="noopener">Q030：协议迁移时如何降低业务中断风险？</a></li>
-      <li><span class="qno">Q031</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q031-storage-controller.md" target="_blank" rel="noopener">Q031：存储控制器在系统中做什么？</a></li>
-      <li><span class="qno">Q032</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q032-cache-consistency.md" target="_blank" rel="noopener">Q032：缓存如何提升性能，又带来哪些一致性风险？</a></li>
-      <li><span class="qno">Q033</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q033-cache.md" target="_blank" rel="noopener">Q033：写入确认发生在缓存、日志和磁盘的哪个阶段？</a></li>
-      <li><span class="qno">Q034</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q034-metadata-file-data.md" target="_blank" rel="noopener">Q034：元数据为什么会成为文件系统的性能瓶颈？</a></li>
-      <li><span class="qno">Q035</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q035-erasure-coding-striping-data.md" target="_blank" rel="noopener">Q035：条带化、镜像和纠删码如何改变数据路径？</a></li>
-      <li><span class="qno">Q036</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q036-storage.md" target="_blank" rel="noopener">Q036：全闪存阵列的性能瓶颈通常在哪里？</a></li>
-      <li><span class="qno">Q037</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q037-write-amplification.md" target="_blank" rel="noopener">Q037：读写放大是如何产生的？</a></li>
-      <li><span class="qno">Q038</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q038-data-reduction-capacity-data.md" target="_blank" rel="noopener">Q038：数据缩减如何影响容量估算与性能？</a></li>
-      <li><span class="qno">Q039</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q039-thin-provisioning-capacity.md" target="_blank" rel="noopener">Q039：精简配置为什么可能带来容量耗尽风险？</a></li>
-      <li><span class="qno">Q040</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q040-snapshot-clone-cost.md" target="_blank" rel="noopener">Q040：快照与克隆的内部机制和成本是什么？</a></li>
-      <li><span class="qno">Q041</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q041-qos-storage-business.md" target="_blank" rel="noopener">Q041：QoS 如何防止一个业务拖慢整个存储池？</a></li>
-      <li><span class="qno">Q042</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q042-storage-multi-tenant-isolation.md" target="_blank" rel="noopener">Q042：多租户存储如何隔离性能与数据访问？</a></li>
-      <li><span class="qno">Q043</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q043-storage-virtualization.md" target="_blank" rel="noopener">Q043：存储虚拟化解决什么问题，又增加什么复杂度？</a></li>
-      <li><span class="qno">Q044</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q044-storage-tiering.md" target="_blank" rel="noopener">Q044：分层存储何时有效，何时只会增加运维负担？</a></li>
-      <li><span class="qno">Q045</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q045-business.md" target="_blank" rel="noopener">Q045：如何画出一个业务的端到端 I/O 路径？</a></li>
-      <li><span class="qno">Q046</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q046-raid-ai.md" target="_blank" rel="noopener">Q046：RAID 5、RAID 6 和 RAID 10 如何取舍？</a></li>
-      <li><span class="qno">Q047</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q047-rebuild.md" target="_blank" rel="noopener">Q047：磁盘重建窗口为什么是可靠性风险？</a></li>
-      <li><span class="qno">Q048</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q048-erasure-coding-capacity.md" target="_blank" rel="noopener">Q048：纠删码适合哪些容量型负载？</a></li>
-      <li><span class="qno">Q049</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q049-active-active-replication.md" target="_blank" rel="noopener">Q049：双活、同步复制和异步复制有什么区别？</a></li>
-      <li><span class="qno">Q050</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q050-snapshot-backup-replication.md" target="_blank" rel="noopener">Q050：备份、快照和复制为什么不能互相替代？</a></li>
-      <li><span class="qno">Q051</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q051-storage-ransomware.md" target="_blank" rel="noopener">Q051：勒索软件防护在存储层需要哪些能力？</a></li>
-      <li><span class="qno">Q052</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q052-snapshot-replication.md" target="_blank" rel="noopener">Q052：不可变快照与离线副本各自解决什么问题？</a></li>
-      <li><span class="qno">Q053</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q053-active-active-dr.md" target="_blank" rel="noopener">Q053：如何设计跨机房灾备而不盲目追求双活？</a></li>
-      <li><span class="qno">Q054</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q054-stress-test.md" target="_blank" rel="noopener">Q054：性能压测为什么常常无法代表生产负载？</a></li>
-      <li><span class="qno">Q055</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q055-storage-benchmark.md" target="_blank" rel="noopener">Q055: 如何设计可复现的存储基准测试？</a></li>
-      <li><span class="qno">Q056</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q056-p99-latency-latency.md" target="_blank" rel="noopener">Q056: P99 时延为什么比平均时延更值得关注？</a></li>
-      <li><span class="qno">Q057</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q057-cache-scaling.md" target="_blank" rel="noopener">Q057：缓存命中率与工作集如何指导性能扩容？</a></li>
-      <li><span class="qno">Q058</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q058-storage-monitoring-capacity.md" target="_blank" rel="noopener">Q058：存储告警应优先关注哪些容量与性能信号？</a></li>
-      <li><span class="qno">Q059</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q059-firmware-multipath-upgrade.md" target="_blank" rel="noopener">Q059：固件、驱动和多路径升级如何降低风险？</a></li>
-      <li><span class="qno">Q060</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q060-storage-postmortem-failure.md" target="_blank" rel="noopener">Q060：一次存储故障复盘应包含哪些证据？</a></li>
-      <li><span class="qno">Q061</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q061-storage-scale-out.md" target="_blank" rel="noopener">Q061：分布式存储为什么能横向扩展？</a></li>
-      <li><span class="qno">Q062</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q062-ceph-rados-crush.md" target="_blank" rel="noopener">Q062：Ceph 的 RADOS、MON、OSD 与 CRUSH 各自做什么？</a></li>
-      <li><span class="qno">Q063</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q063-ceph-object-file.md" target="_blank" rel="noopener">Q063：Ceph 为什么可以同时提供块、文件和对象服务？</a></li>
-      <li><span class="qno">Q064</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q064-storage-erasure-coding-replication.md" target="_blank" rel="noopener">Q064：分布式存储的副本数和纠删码如何选择？</a></li>
-      <li><span class="qno">Q065</span><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q065-bandwidth-failure-recovery.md" target="_blank" rel="noopener">Q065：都说带宽够，为什么故障恢复时还是卡？</a></li>
-    </ol>
+<div class="toolbar">
+  <div class="wrap">
+    <input id="q" type="search" placeholder="搜索编号或关键词：Q019 / NVMe / 灾备 / 全闪">
+    <nav class="chips"><a class="chip" href="#ch1">第一章 · 基础认知</a>
+      <a class="chip" href="#ch2">第二章 · 协议与接口</a>
+      <a class="chip" href="#ch3">第三章 · 架构与数据路径</a>
+      <a class="chip" href="#ch4">第四章 · 可靠性与性能</a>
+      <a class="chip" href="#ch5">第五章 · 分布式与云</a></nav>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="chapter" id="ch1">
+    <div class="ch-head">
+      <span class="ch-num">01</span>
+      <div class="ch-title"><h2>基础认知</h2><p>15 篇</p></div>
+    </div>
+    <ul class="grid">
+<li class="item" data-k="q001 企业为什么需要专业存储？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q001-storage.md" target="_blank" rel="noopener"><span class="qno">Q001</span><span class="qt">企业为什么需要专业存储？</span></a></li>
+<li class="item" data-k="q002 nas、san 与对象存储的差别是什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q002-storage-object.md" target="_blank" rel="noopener"><span class="qno">Q002</span><span class="qt">NAS、SAN 与对象存储的差别是什么？</span></a></li>
+<li class="item" data-k="q003 一个 i/o 请求进入存储系统后发生了什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q003-storage.md" target="_blank" rel="noopener"><span class="qno">Q003</span><span class="qt">一个 I/O 请求进入存储系统后发生了什么？</span></a></li>
+<li class="item" data-k="q004 企业存储为什么不直接使用普通服务器硬盘？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q004-storage.md" target="_blank" rel="noopener"><span class="qno">Q004</span><span class="qt">企业存储为什么不直接使用普通服务器硬盘？</span></a></li>
+<li class="item" data-k="q005 有备份、有副本，raid 今天还解决什么问题？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q005-raid-ai-replication.md" target="_blank" rel="noopener"><span class="qno">Q005</span><span class="qt">有备份、有副本，RAID 今天还解决什么问题？</span></a></li>
+<li class="item" data-k="q006 块、文件、对象，别先问谁更快"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q006-object-file.md" target="_blank" rel="noopener"><span class="qno">Q006</span><span class="qt">块、文件、对象，别先问谁更快</span></a></li>
+<li class="item" data-k="q007 容量、性能、可靠性、成本，别各选各的"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q007-capacity-cost.md" target="_blank" rel="noopener"><span class="qno">Q007</span><span class="qt">容量、性能、可靠性、成本，别各选各的</span></a></li>
+<li class="item" data-k="q008 管理面绿灯，业务就一定正常吗"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q008-business.md" target="_blank" rel="noopener"><span class="qno">Q008</span><span class="qt">管理面绿灯，业务就一定正常吗</span></a></li>
+<li class="item" data-k="q009 同样 100tb，为什么存储价格差这么大？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q009-storage-cost.md" target="_blank" rel="noopener"><span class="qno">Q009</span><span class="qt">同样 100TB，为什么存储价格差这么大？</span></a></li>
+<li class="item" data-k="q010 存储选型前，业务方必须提供哪些数据？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q010-storage-selection-business.md" target="_blank" rel="noopener"><span class="qno">Q010</span><span class="qt">存储选型前，业务方必须提供哪些数据？</span></a></li>
+<li class="item" data-k="q011 iops、吞吐量和时延应如何一起理解？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q011-latency-iops-throughput.md" target="_blank" rel="noopener"><span class="qno">Q011</span><span class="qt">IOPS、吞吐量和时延应如何一起理解？</span></a></li>
+<li class="item" data-k="q012 存储的可用容量为什么常常小于采购容量？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q012-storage-capacity.md" target="_blank" rel="noopener"><span class="qno">Q012</span><span class="qt">存储的可用容量为什么常常小于采购容量？</span></a></li>
+<li class="item" data-k="q013 数据增长率如何影响企业级存储架构？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q013-storage-data.md" target="_blank" rel="noopener"><span class="qno">Q013</span><span class="qt">数据增长率如何影响企业级存储架构？</span></a></li>
+<li class="item" data-k="q014 什么是 rpo 与 rto，它们如何影响存储设计？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q014-rpo-rto-rto-storage.md" target="_blank" rel="noopener"><span class="qno">Q014</span><span class="qt">什么是 RPO 与 RTO，它们如何影响存储设计？</span></a></li>
+<li class="item" data-k="q015 企业存储项目最常见的误区是什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q015-storage-pitfalls.md" target="_blank" rel="noopener"><span class="qno">Q015</span><span class="qt">企业存储项目最常见的误区是什么？</span></a></li>
+    </ul>
   </section>
 
-  <section class="card">
-    <h2>AI 推理与存储 · KV Cache 六讲</h2>
-    <p class="desc">从一次推理请求的旅程讲到企业级推理架构的落地顺序（正文在公众号「存储罗盘」）。</p>
-    <ol>
-      <li><span class="qno">第1讲</span><a href="https://mp.weixin.qq.com/s/IUrhhro7XZYgFW6R-T7RBg" target="_blank" rel="noopener">模型为什么不能直接给答案？一次推理请求的完整旅程</a><i class="note">从 prefill 到 decode，看清一次请求的时间都花在哪</i></li>
-      <li><span class="qno">第2讲</span><a href="https://mp.weixin.qq.com/s/FvR--NyGDy0eMbFVmLFlaQ" target="_blank" rel="noopener">KV Cache 到底缓存了什么？</a><i class="note">K/V 张量是什么、为什么随序列长度线性膨胀</i></li>
-      <li><span class="qno">第3讲</span><a href="https://mp.weixin.qq.com/s/iweY7rpUYspn1GGxjUVURg" target="_blank" rel="noopener">KV Cache 装不下了，为什么显存和推理延迟同时告急？</a><i class="note">显存不足如何传导为延迟与并发的双杀</i></li>
-      <li><span class="qno">第4讲</span><a href="https://mp.weixin.qq.com/s/ZxsIfohvzl8w7VxxIaPDMw" target="_blank" rel="noopener">KV Cache 不够用了，究竟有几类解决办法？</a><i class="note">驱逐、量化、共享、下沉：每条路的代价</i></li>
-      <li><span class="qno">第5讲</span><a href="https://mp.weixin.qq.com/s/0FGCsdislK28xeRNQYtjhA" target="_blank" rel="noopener">KV Cache 能不能放到 SSD？答案不在 SSD 有多快</a><i class="note">落盘的真正瓶颈是带宽之外的访问模式</i></li>
-      <li><span class="qno">第6讲</span><a href="https://mp.weixin.qq.com/s/Swm9M_wLfoYLKK9FVFX75A" target="_blank" rel="noopener">企业级推理架构，先做 PD 分离，再做存算分离</a><i class="note">两件事的先后顺序与各自的收益边界</i></li>
-    </ol>
+  <section class="chapter" id="ch2">
+    <div class="ch-head">
+      <span class="ch-num">02</span>
+      <div class="ch-title"><h2>协议与接口</h2><p>15 篇</p></div>
+    </div>
+    <ul class="grid">
+<li class="item" data-k="q016 nfs 是什么，适合哪些企业文件业务？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q016-nfs-file-business.md" target="_blank" rel="noopener"><span class="qno">Q016</span><span class="qt">NFS 是什么，适合哪些企业文件业务？</span></a></li>
+<li class="item" data-k="q017 smb 是什么，和 nfs 的主要差异是什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q017-nfs-smb.md" target="_blank" rel="noopener"><span class="qno">Q017</span><span class="qt">SMB 是什么，和 NFS 的主要差异是什么？</span></a></li>
+<li class="item" data-k="q018 iscsi 与 fibre channel 如何选择？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q018-iscsi-fibre-channel.md" target="_blank" rel="noopener"><span class="qno">Q018</span><span class="qt">iSCSI 与 Fibre Channel 如何选择？</span></a></li>
+<li class="item" data-k="q019 nvme over fabrics 解决了什么问题？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q019-nvme.md" target="_blank" rel="noopener"><span class="qno">Q019</span><span class="qt">NVMe over Fabrics 解决了什么问题？</span></a></li>
+<li class="item" data-k="q020 nvme/tcp、roce 和 fibre channel-nvme 的取舍是什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q020-fibre-channel-nvme.md" target="_blank" rel="noopener"><span class="qno">Q020</span><span class="qt">NVMe/TCP、RoCE 和 Fibre Channel-NVMe 的取舍是什么？</span></a></li>
+<li class="item" data-k="q021 多路径如何避免单链路或单控制器故障？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q021-controller-multipath-failure.md" target="_blank" rel="noopener"><span class="qno">Q021</span><span class="qt">多路径如何避免单链路或单控制器故障？</span></a></li>
+<li class="item" data-k="q022 文件锁、缓存一致性与协议选择有什么关系？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q022-cache-protocol-file.md" target="_blank" rel="noopener"><span class="qno">Q022</span><span class="qt">文件锁、缓存一致性与协议选择有什么关系？</span></a></li>
+<li class="item" data-k="q023 客户端挂载参数为什么会改变业务体验？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q023-mount-business.md" target="_blank" rel="noopener"><span class="qno">Q023</span><span class="qt">客户端挂载参数为什么会改变业务体验？</span></a></li>
+<li class="item" data-k="q024 小 io、大 io、顺序与随机访问如何影响协议表现？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q024-protocol.md" target="_blank" rel="noopener"><span class="qno">Q024</span><span class="qt">小 IO、大 IO、顺序与随机访问如何影响协议表现？</span></a></li>
+<li class="item" data-k="q025 什么是 rdma，它在存储网络中何时值得使用？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q025-rdma-storage.md" target="_blank" rel="noopener"><span class="qno">Q025</span><span class="qt">什么是 RDMA，它在存储网络中何时值得使用？</span></a></li>
+<li class="item" data-k="q026 存储网络的 mtu、拥塞与丢包如何影响时延？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q026-mtu-storage-latency.md" target="_blank" rel="noopener"><span class="qno">Q026</span><span class="qt">存储网络的 MTU、拥塞与丢包如何影响时延？</span></a></li>
+<li class="item" data-k="q027 为什么不能只看链路带宽判断存储性能？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q027-storage-bandwidth.md" target="_blank" rel="noopener"><span class="qno">Q027</span><span class="qt">为什么不能只看链路带宽判断存储性能？</span></a></li>
+<li class="item" data-k="q028 kubernetes、数据库和虚拟化分别常用哪些存储接口？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q028-kubernetes-storage-virtualization.md" target="_blank" rel="noopener"><span class="qno">Q028</span><span class="qt">Kubernetes、数据库和虚拟化分别常用哪些存储接口？</span></a></li>
+<li class="item" data-k="q029 对象存储的 s3 api 与传统文件系统如何协同？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q029-s3-api-storage-object.md" target="_blank" rel="noopener"><span class="qno">Q029</span><span class="qt">对象存储的 S3 API 与传统文件系统如何协同？</span></a></li>
+<li class="item" data-k="q030 协议迁移时如何降低业务中断风险？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q030-migration-protocol-business.md" target="_blank" rel="noopener"><span class="qno">Q030</span><span class="qt">协议迁移时如何降低业务中断风险？</span></a></li>
+    </ul>
   </section>
 
-  <section class="card">
-    <h2>交流</h2>
-    <p style="font-size:14px">存储选型、架构与同行交流 → <a href="card/">赵龙杰 · 联系方式</a></p>
+  <section class="chapter" id="ch3">
+    <div class="ch-head">
+      <span class="ch-num">03</span>
+      <div class="ch-title"><h2>架构与数据路径</h2><p>15 篇</p></div>
+    </div>
+    <ul class="grid">
+<li class="item" data-k="q031 存储控制器在系统中做什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q031-storage-controller.md" target="_blank" rel="noopener"><span class="qno">Q031</span><span class="qt">存储控制器在系统中做什么？</span></a></li>
+<li class="item" data-k="q032 缓存如何提升性能，又带来哪些一致性风险？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q032-cache-consistency.md" target="_blank" rel="noopener"><span class="qno">Q032</span><span class="qt">缓存如何提升性能，又带来哪些一致性风险？</span></a></li>
+<li class="item" data-k="q033 写入确认发生在缓存、日志和磁盘的哪个阶段？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q033-cache.md" target="_blank" rel="noopener"><span class="qno">Q033</span><span class="qt">写入确认发生在缓存、日志和磁盘的哪个阶段？</span></a></li>
+<li class="item" data-k="q034 元数据为什么会成为文件系统的性能瓶颈？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q034-metadata-file-data.md" target="_blank" rel="noopener"><span class="qno">Q034</span><span class="qt">元数据为什么会成为文件系统的性能瓶颈？</span></a></li>
+<li class="item" data-k="q035 条带化、镜像和纠删码如何改变数据路径？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q035-erasure-coding-striping-data.md" target="_blank" rel="noopener"><span class="qno">Q035</span><span class="qt">条带化、镜像和纠删码如何改变数据路径？</span></a></li>
+<li class="item" data-k="q036 全闪存阵列的性能瓶颈通常在哪里？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q036-storage.md" target="_blank" rel="noopener"><span class="qno">Q036</span><span class="qt">全闪存阵列的性能瓶颈通常在哪里？</span></a></li>
+<li class="item" data-k="q037 读写放大是如何产生的？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q037-write-amplification.md" target="_blank" rel="noopener"><span class="qno">Q037</span><span class="qt">读写放大是如何产生的？</span></a></li>
+<li class="item" data-k="q038 数据缩减如何影响容量估算与性能？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q038-data-reduction-capacity-data.md" target="_blank" rel="noopener"><span class="qno">Q038</span><span class="qt">数据缩减如何影响容量估算与性能？</span></a></li>
+<li class="item" data-k="q039 精简配置为什么可能带来容量耗尽风险？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q039-thin-provisioning-capacity.md" target="_blank" rel="noopener"><span class="qno">Q039</span><span class="qt">精简配置为什么可能带来容量耗尽风险？</span></a></li>
+<li class="item" data-k="q040 快照与克隆的内部机制和成本是什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q040-snapshot-clone-cost.md" target="_blank" rel="noopener"><span class="qno">Q040</span><span class="qt">快照与克隆的内部机制和成本是什么？</span></a></li>
+<li class="item" data-k="q041 qos 如何防止一个业务拖慢整个存储池？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q041-qos-storage-business.md" target="_blank" rel="noopener"><span class="qno">Q041</span><span class="qt">QoS 如何防止一个业务拖慢整个存储池？</span></a></li>
+<li class="item" data-k="q042 多租户存储如何隔离性能与数据访问？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q042-storage-multi-tenant-isolation.md" target="_blank" rel="noopener"><span class="qno">Q042</span><span class="qt">多租户存储如何隔离性能与数据访问？</span></a></li>
+<li class="item" data-k="q043 存储虚拟化解决什么问题，又增加什么复杂度？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q043-storage-virtualization.md" target="_blank" rel="noopener"><span class="qno">Q043</span><span class="qt">存储虚拟化解决什么问题，又增加什么复杂度？</span></a></li>
+<li class="item" data-k="q044 分层存储何时有效，何时只会增加运维负担？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q044-storage-tiering.md" target="_blank" rel="noopener"><span class="qno">Q044</span><span class="qt">分层存储何时有效，何时只会增加运维负担？</span></a></li>
+<li class="item" data-k="q045 如何画出一个业务的端到端 i/o 路径？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q045-business.md" target="_blank" rel="noopener"><span class="qno">Q045</span><span class="qt">如何画出一个业务的端到端 I/O 路径？</span></a></li>
+    </ul>
+  </section>
+
+  <section class="chapter" id="ch4">
+    <div class="ch-head">
+      <span class="ch-num">04</span>
+      <div class="ch-title"><h2>可靠性与性能</h2><p>15 篇</p></div>
+    </div>
+    <ul class="grid">
+<li class="item" data-k="q046 raid 5、raid 6 和 raid 10 如何取舍？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q046-raid-ai.md" target="_blank" rel="noopener"><span class="qno">Q046</span><span class="qt">RAID 5、RAID 6 和 RAID 10 如何取舍？</span></a></li>
+<li class="item" data-k="q047 磁盘重建窗口为什么是可靠性风险？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q047-rebuild.md" target="_blank" rel="noopener"><span class="qno">Q047</span><span class="qt">磁盘重建窗口为什么是可靠性风险？</span></a></li>
+<li class="item" data-k="q048 纠删码适合哪些容量型负载？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q048-erasure-coding-capacity.md" target="_blank" rel="noopener"><span class="qno">Q048</span><span class="qt">纠删码适合哪些容量型负载？</span></a></li>
+<li class="item" data-k="q049 双活、同步复制和异步复制有什么区别？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q049-active-active-replication.md" target="_blank" rel="noopener"><span class="qno">Q049</span><span class="qt">双活、同步复制和异步复制有什么区别？</span></a></li>
+<li class="item" data-k="q050 备份、快照和复制为什么不能互相替代？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q050-snapshot-backup-replication.md" target="_blank" rel="noopener"><span class="qno">Q050</span><span class="qt">备份、快照和复制为什么不能互相替代？</span></a></li>
+<li class="item" data-k="q051 勒索软件防护在存储层需要哪些能力？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q051-storage-ransomware.md" target="_blank" rel="noopener"><span class="qno">Q051</span><span class="qt">勒索软件防护在存储层需要哪些能力？</span></a></li>
+<li class="item" data-k="q052 不可变快照与离线副本各自解决什么问题？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q052-snapshot-replication.md" target="_blank" rel="noopener"><span class="qno">Q052</span><span class="qt">不可变快照与离线副本各自解决什么问题？</span></a></li>
+<li class="item" data-k="q053 如何设计跨机房灾备而不盲目追求双活？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q053-active-active-dr.md" target="_blank" rel="noopener"><span class="qno">Q053</span><span class="qt">如何设计跨机房灾备而不盲目追求双活？</span></a></li>
+<li class="item" data-k="q054 性能压测为什么常常无法代表生产负载？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q054-stress-test.md" target="_blank" rel="noopener"><span class="qno">Q054</span><span class="qt">性能压测为什么常常无法代表生产负载？</span></a></li>
+<li class="item" data-k="q055 如何设计可复现的存储基准测试？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q055-storage-benchmark.md" target="_blank" rel="noopener"><span class="qno">Q055</span><span class="qt">如何设计可复现的存储基准测试？</span></a></li>
+<li class="item" data-k="q056 p99 时延为什么比平均时延更值得关注？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q056-p99-latency-latency.md" target="_blank" rel="noopener"><span class="qno">Q056</span><span class="qt">P99 时延为什么比平均时延更值得关注？</span></a></li>
+<li class="item" data-k="q057 缓存命中率与工作集如何指导性能扩容？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q057-cache-scaling.md" target="_blank" rel="noopener"><span class="qno">Q057</span><span class="qt">缓存命中率与工作集如何指导性能扩容？</span></a></li>
+<li class="item" data-k="q058 存储告警应优先关注哪些容量与性能信号？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q058-storage-monitoring-capacity.md" target="_blank" rel="noopener"><span class="qno">Q058</span><span class="qt">存储告警应优先关注哪些容量与性能信号？</span></a></li>
+<li class="item" data-k="q059 固件、驱动和多路径升级如何降低风险？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q059-firmware-multipath-upgrade.md" target="_blank" rel="noopener"><span class="qno">Q059</span><span class="qt">固件、驱动和多路径升级如何降低风险？</span></a></li>
+<li class="item" data-k="q060 一次存储故障复盘应包含哪些证据？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q060-storage-postmortem-failure.md" target="_blank" rel="noopener"><span class="qno">Q060</span><span class="qt">一次存储故障复盘应包含哪些证据？</span></a></li>
+    </ul>
+  </section>
+
+  <section class="chapter" id="ch5">
+    <div class="ch-head">
+      <span class="ch-num">05</span>
+      <div class="ch-title"><h2>分布式与云</h2><p>5 篇</p></div>
+    </div>
+    <ul class="grid">
+<li class="item" data-k="q061 分布式存储为什么能横向扩展？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q061-storage-scale-out.md" target="_blank" rel="noopener"><span class="qno">Q061</span><span class="qt">分布式存储为什么能横向扩展？</span></a></li>
+<li class="item" data-k="q062 ceph 的 rados、mon、osd 与 crush 各自做什么？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q062-ceph-rados-crush.md" target="_blank" rel="noopener"><span class="qno">Q062</span><span class="qt">Ceph 的 RADOS、MON、OSD 与 CRUSH 各自做什么？</span></a></li>
+<li class="item" data-k="q063 ceph 为什么可以同时提供块、文件和对象服务？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q063-ceph-object-file.md" target="_blank" rel="noopener"><span class="qno">Q063</span><span class="qt">Ceph 为什么可以同时提供块、文件和对象服务？</span></a></li>
+<li class="item" data-k="q064 分布式存储的副本数和纠删码如何选择？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q064-storage-erasure-coding-replication.md" target="_blank" rel="noopener"><span class="qno">Q064</span><span class="qt">分布式存储的副本数和纠删码如何选择？</span></a></li>
+<li class="item" data-k="q065 都说带宽够，为什么故障恢复时还是卡？"><a href="https://github.com/zlj123455/storage-compass/blob/main/content/published/Q065-bandwidth-failure-recovery.md" target="_blank" rel="noopener"><span class="qno">Q065</span><span class="qt">都说带宽够，为什么故障恢复时还是卡？</span></a></li>
+    </ul>
+  </section>
+
+  <section class="chapter" id="ai">
+    <div class="ch-head"><span class="ch-num">AI</span>
+      <div class="ch-title"><h2>AI 推理与存储 · KV Cache 六讲</h2><p>正文发布于公众号「存储罗盘」</p></div>
+    </div>
+    <ul class="ai-grid">
+      <li class="ai-card item" data-k="第1讲 模型为什么不能直接给答案？ 一次推理请求的完整旅程"><a href="https://mp.weixin.qq.com/s/IUrhhro7XZYgFW6R-T7RBg" target="_blank" rel="noopener"><span class="lect">第1讲</span><b>模型为什么不能直接给答案？</b><i>一次推理请求的完整旅程</i></a></li>
+      <li class="ai-card item" data-k="第2讲 kv cache 到底缓存了什么？ k/v 张量为何随序列线性膨胀"><a href="https://mp.weixin.qq.com/s/FvR--NyGDy0eMbFVmLFlaQ" target="_blank" rel="noopener"><span class="lect">第2讲</span><b>KV Cache 到底缓存了什么？</b><i>K/V 张量为何随序列线性膨胀</i></a></li>
+      <li class="ai-card item" data-k="第3讲 装不下了，延迟和显存为何同时告急 显存不足如何传导为并发下降"><a href="https://mp.weixin.qq.com/s/iweY7rpUYspn1GGxjUVURg" target="_blank" rel="noopener"><span class="lect">第3讲</span><b>装不下了，延迟和显存为何同时告急</b><i>显存不足如何传导为并发下降</i></a></li>
+      <li class="ai-card item" data-k="第4讲 不够用了，究竟有几类解决办法 驱逐/量化/共享/下沉的代价"><a href="https://mp.weixin.qq.com/s/ZxsIfohvzl8w7VxxIaPDMw" target="_blank" rel="noopener"><span class="lect">第4讲</span><b>不够用了，究竟有几类解决办法</b><i>驱逐/量化/共享/下沉的代价</i></a></li>
+      <li class="ai-card item" data-k="第5讲 能不能放到 ssd，答案不在 ssd 有多快 落盘瓶颈在访问模式"><a href="https://mp.weixin.qq.com/s/0FGCsdislK28xeRNQYtjhA" target="_blank" rel="noopener"><span class="lect">第5讲</span><b>能不能放到 SSD，答案不在 SSD 有多快</b><i>落盘瓶颈在访问模式</i></a></li>
+      <li class="ai-card item" data-k="第6讲 先做 pd 分离，再做存算分离 企业级推理架构的落地顺序"><a href="https://mp.weixin.qq.com/s/Swm9M_wLfoYLKK9FVFX75A" target="_blank" rel="noopener"><span class="lect">第6讲</span><b>先做 PD 分离，再做存算分离</b><i>企业级推理架构的落地顺序</i></a></li>
+    </ul>
+  </section>
+
+  <p class="empty" id="empty">没有匹配的条目，换个关键词试试。</p>
+
+  <section class="cta">
+    <div><h3>存储选型、架构讨论、同行交流</h3>
+      <p>全闪阵列、SAN / 灾备、信创存储的一线信息，随时聊。</p></div>
+    <a class="btn" href="card/">联系方式 →</a>
   </section>
 
   <p class="foot">© 2026 赵龙杰 · 中科曙光 FlashNexus · 公众号「存储罗盘」同步连载</p>
 </main>
+
+<script>
+(function(){
+  var q = document.getElementById('q');
+  var items = Array.prototype.slice.call(document.querySelectorAll('.item'));
+  var empty = document.getElementById('empty');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('.chapter'));
+  q.addEventListener('input', function(){
+    var v = q.value.trim().toLowerCase();
+    var shown = 0;
+    items.forEach(function(it){
+      var hit = !v || (it.getAttribute('data-k') || '').indexOf(v) >= 0;
+      it.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    chapters.forEach(function(sec){
+      var any = Array.prototype.some.call(sec.querySelectorAll('.item'), function(it){ return it.style.display !== 'none'; });
+      sec.style.display = (any || !v) ? '' : 'none';
+    });
+    empty.style.display = (v && shown === 0) ? 'block' : 'none';
+  });
+})();
+</script>
 </body>
 </html>
