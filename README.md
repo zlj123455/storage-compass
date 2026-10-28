@@ -8,7 +8,7 @@
 - [联系方式 / 交流](https://zlj123455.github.io/storage-compass/card/)
 - [企业存储架构师 100 问](content/100-questions/README.md)
 
-### 企业存储架构师 100 问（已发布 65 篇）
+## 系列一 · 企业存储架构师 100 问（已发布 65 篇）
 
 - [Q001：企业为什么需要专业存储？](Q001-storage.md)
 - [Q002：NAS、SAN 与对象存储的差别是什么？](Q002-storage-object.md)
@@ -76,7 +76,9 @@
 - [Q064：分布式存储的副本数和纠删码如何选择？](Q064-storage-erasure-coding-replication.md)
 - [Q065：都说带宽够，为什么故障恢复时还是卡？](Q065-bandwidth-failure-recovery.md)
 
-### AI 推理与存储 · KV Cache 六讲（6 篇，正文见公众号）
+## 系列二 · AI 推理与存储（6 讲，正文见公众号）
+
+#### KV Cache 六讲
 
 - [第1讲 模型为什么不能直接给答案？](https://mp.weixin.qq.com/s/IUrhhro7XZYgFW6R-T7RBg)
 - [第2讲 KV Cache 到底缓存了什么？](https://mp.weixin.qq.com/s/FvR--NyGDy0eMbFVmLFlaQ)
