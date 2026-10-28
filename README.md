@@ -4,11 +4,11 @@
 
 ## 快速入口
 
-- [企业存储架构师 100 问](content/100-questions/README.md)
-- [在线阅读版（全部 65 篇）](https://zlj123455.github.io/storage-compass/)
+- [在线阅读版](https://zlj123455.github.io/storage-compass/)
 - [联系方式 / 交流](https://zlj123455.github.io/storage-compass/card/)
+- [企业存储架构师 100 问](content/100-questions/README.md)
 
-### 文章目录
+### 企业存储架构师 100 问（65 篇）
 
 - [Q001：Q001：企业为什么需要专业存储？](Q001-storage.md)
 - [Q002：Q002：NAS、SAN 与对象存储的差别是什么？](Q002-storage-object.md)
@@ -75,6 +75,15 @@
 - [Q063：Q063：Ceph 为什么可以同时提供块、文件和对象服务？](Q063-ceph-object-file.md)
 - [Q064：Q064：分布式存储的副本数和纠删码如何选择？](Q064-storage-erasure-coding-replication.md)
 - [Q065：Q065：都说带宽够，为什么故障恢复时还是卡？](Q065-bandwidth-failure-recovery.md)
+
+### AI 推理与存储 · KV Cache 六讲（6 篇，正文见公众号）
+
+- [第1讲 模型为什么不能直接给答案？一次推理请求的完整旅程](https://mp.weixin.qq.com/s/IUrhhro7XZYgFW6R-T7RBg)
+- [第2讲 KV Cache 到底缓存了什么？](https://mp.weixin.qq.com/s/FvR--NyGDy0eMbFVmLFlaQ)
+- [第3讲 KV Cache 装不下了，为什么显存和推理延迟同时告急？](https://mp.weixin.qq.com/s/iweY7rpUYspn1GGxjUVURg)
+- [第4讲 KV Cache 不够用了，究竟有几类解决办法？](https://mp.weixin.qq.com/s/ZxsIfohvzl8w7VxxIaPDMw)
+- [第5讲 KV Cache 能不能放到 SSD？答案不在 SSD 有多快](https://mp.weixin.qq.com/s/0FGCsdislK28xeRNQYtjhA)
+- [第6讲 企业级推理架构，先做 PD 分离，再做存算分离](https://mp.weixin.qq.com/s/Swm9M_wLfoYLKK9FVFX75A)
 
 ## 仓库结构
 
