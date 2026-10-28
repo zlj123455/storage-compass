@@ -235,8 +235,8 @@ a { -webkit-tap-highlight-color:transparent; }
 /* ── 标题区：左标题 / 右简介（手机隐藏统计）───────── */
 .hero { display:flex; align-items:flex-start; gap:12px; padding:12px 0 10px; }
 .hero h1 { font-size:20px; font-weight:700; letter-spacing:-.3px; white-space:nowrap; }
-.hero-side { margin-left:auto; text-align:right; max-width:200px; }
-.lede { font-size:11.5px; line-height:1.5; color:#8A887E; }
+.hero-side { margin-left:auto; text-align:right; flex:1; min-width:0; }
+.lede { font-size:11px; line-height:1.5; color:#8A887E; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .stats, .stat-sub { display:none; }
 
 /* ── 手机首屏双码卡（横排一行）；桌面侧栏仅桌面显示 ── */
@@ -342,7 +342,7 @@ details[open] > summary .ch-arrow { transform:rotate(90deg); }
   .hero { align-items:flex-end; padding:34px 0 20px; }
   .hero h1 { font-size:34px; letter-spacing:-.6px; }
   .hero-side { max-width:560px; }
-  .lede { font-size:13.5px; line-height:1.6; color:#5F5D57; margin-bottom:10px; }
+  .lede { font-size:13.5px; line-height:1.6; color:#5F5D57; margin-bottom:10px; white-space:normal; overflow:visible; }
   .stats { display:flex; gap:22px; justify-content:flex-end; }
   .stat { font-size:12.5px; color:var(--muted); }
   .stat b { font-size:19px; font-weight:600; color:var(--red); margin-right:4px; }
