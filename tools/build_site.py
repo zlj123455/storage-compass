@@ -590,6 +590,11 @@ details[open] > summary .ch-arrow { transform:rotate(90deg); }
     c.addEventListener('click', function(){
       var d = document.getElementById(c.getAttribute('href').slice(1));
       if (d) d.open = true;
+      /* 立即点亮所点章节，滚动落定后由 spy 校正 */
+      chips.forEach(function(o){
+        if (o.offsetParent === null) return;
+        o.classList.toggle('on', o === c);
+      });
     });
   });
 
@@ -600,6 +605,13 @@ details[open] > summary .ch-arrow { transform:rotate(90deg); }
       if (d.style.display === 'none') return;
       if (d.getBoundingClientRect().top <= y) cur = d.id;
     });
+    if (!cur && list.length) cur = list[0].id;
+    /* 底部兜底：最后一章滚不到判定线，滚到底时点亮最后一个可见章节 */
+    if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 2) {
+      for (var i = list.length - 1; i >= 0; i--) {
+        if (list[i].style.display !== 'none') { cur = list[i].id; break; }
+      }
+    }
     chips.forEach(function(c){
       if (c.offsetParent === null) return;
       c.classList.toggle('on', c.getAttribute('href') === '#' + cur);
