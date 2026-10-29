@@ -481,7 +481,7 @@ details[open] > summary .ch-arrow { transform:rotate(90deg); }
         <button class="btn" id="ctaBtn" type="button">联系方式 →</button>
       </section>
 
-      <p class="foot">© 2026 赵龙杰 · 公众号「存储罗盘」同步连载</p>
+      <p class="foot">© 2026 罗盘 · 公众号「存储罗盘」同步连载</p>
     </div>
 
     <!-- 桌面侧栏：吸顶联系卡 -->
